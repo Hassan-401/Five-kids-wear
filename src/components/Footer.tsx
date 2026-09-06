@@ -7,7 +7,7 @@ import {
   YoutubeIcon,
   WhatsappIcon,
 } from "./Icons";
-import { Heart, PaperPlane } from "./Decor";
+import { Heart } from "./Decor";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook" },
@@ -33,7 +33,14 @@ export default function Footer() {
     <footer className="relative overflow-hidden bg-gradient-to-b from-pink-50 to-pink-100 pt-14 pb-8 mt-4">
       <Heart className="absolute top-10 start-[12%] w-6 h-6 anim-float-slow" color="#ffc4da" />
       <Heart className="absolute bottom-16 end-[10%] w-5 h-5 anim-float" color="#ff8ac0" />
-      <PaperPlane className="absolute top-16 end-[22%] w-8 h-8 opacity-70 anim-float-slow" />
+
+      {/* paper plane trailing a dashed heart */}
+      <img
+        src="/images/avatars/arrow.png"
+        alt=""
+        aria-hidden="true"
+        className="hidden md:block absolute bottom-4 start-[1.5%] w-36 lg:w-48 select-none pointer-events-none anim-float-slow"
+      />
 
       <div className="container-x relative">
         <div className="grid gap-10 md:grid-cols-3 md:items-start text-center md:text-start">

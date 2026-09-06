@@ -3,3 +3,9 @@ dist
 tsconfig.tsbuildinfo
 .DS_Store
 *.local
+
+# Original artwork kept locally only — the app serves the working copies
+# under public/images/, so these root-level source files are not committed.
+/*.png
+/*.webm
+/products/
