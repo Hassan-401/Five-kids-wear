@@ -1,0 +1,419 @@
+@import "tailwindcss";
+
+@theme {
+  --breakpoint-xs: 26rem;
+
+  --font-display: "Baloo Bhaijaan 2", "Fredoka", system-ui, sans-serif;
+  --font-sans: "Baloo Bhaijaan 2", "Fredoka", system-ui, sans-serif;
+
+  --color-pink-50: #fff5f9;
+  --color-pink-100: #ffe6f0;
+  --color-pink-200: #ffd0e3;
+  --color-pink-300: #ffb3d2;
+  --color-pink-400: #ff8ac0;
+  --color-pink-500: #f9569f;
+  --color-pink-600: #ec3f8c;
+  --color-pink-700: #d92a76;
+
+  --color-sky-100: #e6f2ff;
+  --color-sky-200: #cfe6fd;
+  --color-sky-300: #a9d3fa;
+  --color-sky-400: #74b8f5;
+  --color-sky-500: #3d9bef;
+
+  --color-navy-500: #3b64b0;
+  --color-navy-600: #2a4d94;
+  --color-navy-700: #1e3a75;
+
+  --color-cream: #fffaf5;
+
+  --shadow-soft: 0 10px 30px -10px rgba(236, 63, 140, 0.25);
+  --shadow-card: 0 8px 24px -8px rgba(120, 90, 130, 0.18);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-cream);
+    color: #46324a;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-pink-200);
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-inline: 1rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(
+      100deg,
+      var(--color-pink-500),
+      var(--color-pink-400)
+    );
+    color: #fff;
+    font-weight: 700;
+    padding: 0.75rem 1.75rem;
+    box-shadow: var(--shadow-soft);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Sky-blue variant used for every "add to cart" action */
+  .btn-sky {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(
+      100deg,
+      var(--color-sky-500),
+      var(--color-sky-400)
+    );
+    color: #fff;
+    font-weight: 700;
+    padding: 0.75rem 1.75rem;
+    box-shadow: 0 10px 30px -10px rgba(61, 155, 239, 0.4);
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+  }
+
+  .btn-sky:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+
+  .btn-sky:active {
+    transform: translateY(0);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    border: 2px solid var(--color-pink-300);
+    color: var(--color-pink-600);
+    background: #fff;
+    font-weight: 700;
+    padding: 0.7rem 1.6rem;
+    transition:
+      background 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .btn-ghost:hover {
+    background: var(--color-pink-50);
+    transform: translateY(-2px);
+  }
+
+  .card-soft {
+    background: #fff;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-pink-100);
+  }
+
+  .field {
+    width: 100%;
+    border-radius: 9999px;
+    border: 2px solid var(--color-pink-200);
+    background: #fff;
+    padding: 0.7rem 1.2rem;
+    outline: none;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .field:focus {
+    border-color: var(--color-pink-400);
+    box-shadow: 0 0 0 4px var(--color-pink-100);
+  }
+
+  textarea.field {
+    border-radius: 1.25rem;
+  }
+}
+
+/* Decorative animations */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes floaty-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(6deg);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.anim-float {
+  animation: floaty 4s ease-in-out infinite;
+}
+
+.anim-float-slow {
+  animation: floaty-slow 7s ease-in-out infinite;
+}
+
+.anim-pop {
+  animation: pop-in 0.5s ease both;
+}
+
+/* Hero: slowly drifting background blobs */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(2%, -3%, 0) scale(1.05);
+  }
+  66% {
+    transform: translate3d(-2%, 2%, 0) scale(0.97);
+  }
+}
+
+/* Hero: light sweeping across the badge pill */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-160%);
+  }
+  60%,
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+/* Hero: photo cards bobbing in place */
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Hero: photo cards dealing themselves onto the table */
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.86);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.anim-drift {
+  animation: drift 18s ease-in-out infinite;
+}
+
+.anim-bob {
+  animation: bob 5s ease-in-out infinite;
+}
+
+.anim-deal {
+  animation: deal-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anim-float,
+  .anim-float-slow,
+  .anim-pop,
+  .anim-drift,
+  .anim-bob,
+  .anim-deal,
+  .badge-shimmer::after,
+  .btn-shine::after {
+    animation: none;
+  }
+  .anim-deal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@layer components {
+  /* Pointer-parallax layer. `--depth` scales how far a card lags the cursor;
+     `--px`/`--py` are written on the hero root by usePointerParallax. */
+  .parallax-layer {
+    transform: translate3d(
+      calc(var(--px, 0px) * var(--depth, 1)),
+      calc(var(--py, 0px) * var(--depth, 1)),
+      0
+    );
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  /* Taped instant-photo card used in the hero collage */
+  .polaroid {
+    background: #fff;
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.5rem 1.35rem;
+    box-shadow:
+      0 18px 34px -16px rgba(120, 70, 100, 0.45),
+      0 2px 6px -2px rgba(120, 70, 100, 0.2);
+    transition:
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.4s ease;
+  }
+
+  .polaroid:hover {
+    transform: rotate(0deg) scale(1.06) !important;
+    box-shadow:
+      0 30px 50px -18px rgba(120, 70, 100, 0.5),
+      0 4px 10px -2px rgba(120, 70, 100, 0.25);
+  }
+
+  /* washi tape holding the card down */
+  .polaroid::before {
+    content: "";
+    position: absolute;
+    top: -0.5rem;
+    left: 50%;
+    width: 46%;
+    height: 1.15rem;
+    transform: translateX(-50%) rotate(-3deg);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 222, 150, 0.92),
+      rgba(255, 205, 120, 0.85)
+    );
+    border-inline: 1px dashed rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+  }
+
+  /* Badge pill with a travelling highlight */
+  .badge-shimmer {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .badge-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.75) 50%,
+      transparent 65%
+    );
+    /* highlight the pill without washing out the label underneath */
+    mix-blend-mode: overlay;
+    animation: shimmer 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Button with a shine that sweeps on hover */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .btn-shine::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 45%;
+    left: -60%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    transform: skewX(-18deg);
+    transition: left 0.6s ease;
+    pointer-events: none;
+  }
+
+  .btn-shine:hover::after {
+    left: 130%;
+  }
+
+  /* Cloud-shaped speech bubble used in the hero */
+  .cloud-bubble {
+    position: relative;
+    background: #fff;
+    border-radius: 46% 54% 48% 52% / 58% 44% 56% 42%;
+    box-shadow: 0 18px 40px -18px rgba(120, 90, 130, 0.3);
+  }
+
+  .cloud-bubble::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 2px dashed var(--color-pink-300);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  /* Hide scrollbar for horizontal rails */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
