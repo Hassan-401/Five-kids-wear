@@ -21,6 +21,10 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
+import MenHome from "./pages/dept/MenHome";
+import WomenHome from "./pages/dept/WomenHome";
+import DeptListing from "./pages/dept/DeptListing";
+import DeptProduct from "./pages/dept/DeptProduct";
 import { categories, type CategoryId } from "./data/catalog";
 import { useLang } from "./i18n/LanguageContext";
 
@@ -70,6 +74,15 @@ export default function App() {
         <Route path="category/:slug" element={<CategoryPage />} />
         <Route path="offers" element={<OffersPage />} />
         <Route path="product/:slug" element={<ProductDetail />} />
+
+        {/* Men's + Women's departments — their own design system */}
+        <Route path="men" element={<MenHome />} />
+        <Route path="men/product/:slug" element={<DeptProduct dept="men" />} />
+        <Route path="men/:sub" element={<DeptListing dept="men" />} />
+        <Route path="women" element={<WomenHome />} />
+        <Route path="women/product/:slug" element={<DeptProduct dept="women" />} />
+        <Route path="women/:sub" element={<DeptListing dept="women" />} />
+
         <Route path="cart" element={<Cart />} />
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="checkout" element={<Checkout />} />

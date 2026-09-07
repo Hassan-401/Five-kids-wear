@@ -30,6 +30,8 @@ const navItems = [
   { to: "/category/girls", key: "nav.girls" },
   { to: "/category/pajamas", key: "nav.pajamas" },
   { to: "/category/accessories", key: "nav.accessories" },
+  { to: "/men", key: "nav.men" },
+  { to: "/women", key: "nav.women" },
 ];
 
 export default function Header() {

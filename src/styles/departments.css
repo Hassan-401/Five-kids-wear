@@ -1,0 +1,480 @@
+/* ==================================================================
+   Departments — Men & Women
+   ------------------------------------------------------------------
+   These two sections deliberately step outside the kids design system.
+   Everything here is scoped to `.dept` / `.dept-men` / `.dept-women`
+   so the rest of the storefront is untouched.
+   ================================================================== */
+
+.dept {
+  --card-surface: #f2f1ef;
+  --card-ink: #17171a;
+  --card-muted: #7c7a76;
+  --card-badge: #ef6820;
+  --card-btn: #17171a;
+
+  background: var(--d-page);
+  color: var(--d-ink);
+  font-family: var(--d-font-body);
+}
+
+.dept-men {
+  --d-page: #f3f2ef;
+  --d-panel: #e8e6e1;
+  --d-deep: #16171a;
+  --d-deep-soft: #24262a;
+  --d-ink: #16171a;
+  --d-muted: #6e6c66;
+  --d-line: #d7d4cd;
+  --d-accent: #16171a;
+  --d-on-accent: #ffffff;
+  --d-radius: 0px;
+  --d-track: 0.22em;
+  --d-font-head: "Tajawal", "Inter", system-ui, sans-serif;
+  --d-font-body: "Tajawal", "Inter", system-ui, sans-serif;
+}
+
+.dept-women {
+  --d-page: #fbf7f3;
+  --d-panel: #f2e9e1;
+  --d-deep: #4a3b36;
+  --d-deep-soft: #5d4b45;
+  --d-ink: #332926;
+  --d-muted: #8a7c74;
+  --d-line: #e7dbd0;
+  --d-accent: #8a675c;
+  --d-on-accent: #ffffff;
+  --d-radius: 2px;
+  --d-track: 0.14em;
+  --d-font-head: "Amiri", "Cormorant Garamond", Georgia, serif;
+  --d-font-body: "Tajawal", "Jost", system-ui, sans-serif;
+}
+
+@layer components {
+  /* ---------- shared department primitives ---------- */
+
+  .dept-wrap {
+    width: 100%;
+    max-width: 1360px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+
+  .dept-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: var(--d-track);
+    text-transform: uppercase;
+    color: var(--d-muted);
+  }
+
+  .dept-eyebrow::before {
+    content: "";
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+
+  .dept-h1 {
+    font-family: var(--d-font-head);
+    font-weight: 700;
+    line-height: 1.06;
+  }
+
+  .dept-h2 {
+    font-family: var(--d-font-head);
+    font-weight: 700;
+    line-height: 1.16;
+  }
+
+  .dept-men .dept-h1,
+  .dept-men .dept-h2 {
+    letter-spacing: 0.02em;
+  }
+
+  .dept-women .dept-h1,
+  .dept-women .dept-h2 {
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  .dept-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.9rem 2.1rem;
+    border-radius: var(--d-radius);
+    background: var(--d-accent);
+    color: var(--d-on-accent);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: var(--d-track);
+    text-transform: uppercase;
+    border: 1px solid var(--d-accent);
+    transition:
+      background 0.3s ease,
+      color 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .dept-btn:hover {
+    background: transparent;
+    color: var(--d-accent);
+    transform: translateY(-2px);
+  }
+
+  .dept-btn-light {
+    background: #ffffff;
+    color: var(--d-deep);
+    border-color: #ffffff;
+  }
+
+  .dept-btn-light:hover {
+    background: transparent;
+    color: #ffffff;
+  }
+
+  .dept-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.9rem 2.1rem;
+    border-radius: var(--d-radius);
+    background: transparent;
+    border: 1px solid currentColor;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: var(--d-track);
+    text-transform: uppercase;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .dept-btn-outline:hover {
+    opacity: 0.62;
+    transform: translateY(-2px);
+  }
+
+  /* underlined text link that draws itself on hover */
+  .dept-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: var(--d-track);
+    text-transform: uppercase;
+    padding-bottom: 0.35rem;
+  }
+
+  .dept-link::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0.3);
+    transform-origin: left;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [dir="rtl"] .dept-link::after {
+    transform-origin: right;
+  }
+
+  .dept-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  /* ---------- the product card (identical in both departments) ---------- */
+
+  .pcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--card-surface);
+    overflow: hidden;
+  }
+
+  .pcard-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+    background: #e6e4e0;
+  }
+
+  .pcard-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pcard:hover .pcard-media img {
+    transform: scale(1.045);
+  }
+
+  .pcard-badge {
+    position: absolute;
+    top: 0.6rem;
+    inset-inline-start: 0.6rem;
+    z-index: 2;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: var(--card-badge);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+
+  .pcard-badge-sale {
+    background: var(--card-btn);
+  }
+
+  /* quick-add — sits in the bottom corner of the photo, slides up on hover */
+  .pcard-add {
+    position: absolute;
+    bottom: 0.75rem;
+    inset-inline-start: 0.75rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 6px;
+    background: var(--card-btn);
+    color: #fff;
+    opacity: 0;
+    transform: translateY(0.6rem);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease,
+      background 0.3s ease;
+  }
+
+  .pcard:hover .pcard-add,
+  .pcard-add:focus-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .pcard-add.is-added {
+    background: #2f7d55;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* wishlist heart — mirrored into the opposite corner */
+  .pcard-wish {
+    position: absolute;
+    top: 0.6rem;
+    inset-inline-end: 0.6rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--card-ink);
+    opacity: 0;
+    transition:
+      opacity 0.3s ease,
+      background 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .pcard:hover .pcard-wish,
+  .pcard-wish.is-on,
+  .pcard-wish:focus-visible {
+    opacity: 1;
+  }
+
+  .pcard-wish.is-on {
+    background: var(--card-btn);
+    color: #fff;
+  }
+
+  .pcard-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.7rem 0.75rem 0.9rem;
+    text-align: start;
+  }
+
+  .pcard-name {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--card-ink);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pcard-price {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--card-ink);
+  }
+
+  .pcard-price-old {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--card-muted);
+    text-decoration: line-through;
+    margin-inline-start: 0.4rem;
+  }
+
+  .pcard-swatches {
+    display: flex;
+    gap: 0.3rem;
+  }
+
+  .pcard-swatch {
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .pcard-sizes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--card-muted);
+  }
+
+  /* ---------- department chrome ---------- */
+
+  /* scrolling word strip */
+  .dept-marquee {
+    display: flex;
+    width: max-content;
+    animation: dept-marquee 30s linear infinite;
+  }
+
+  .dept-marquee > span {
+    padding-inline: 1.6rem;
+  }
+
+  [dir="rtl"] .dept-marquee {
+    animation-direction: reverse;
+  }
+
+  /* arched image frame — the women's section signature */
+  .dept-arch {
+    border-radius: 999px 999px 4px 4px;
+    overflow: hidden;
+  }
+
+  /* image tile that dims so a label can sit on top */
+  .dept-tile {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background: var(--d-panel);
+  }
+
+  .dept-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dept-tile:hover img {
+    transform: scale(1.07);
+  }
+
+  .dept-tile-shade::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(12, 12, 14, 0.74),
+      rgba(12, 12, 14, 0.1) 55%,
+      transparent
+    );
+    transition: opacity 0.5s ease;
+  }
+
+  .dept-tile-shade:hover::after {
+    opacity: 0.85;
+  }
+
+  /* thin rule between editorial blocks */
+  .dept-rule {
+    height: 1px;
+    background: var(--d-line);
+    border: 0;
+  }
+
+  /* scroll reveal */
+  .dept-reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .dept-reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* slow zoom on the hero photograph */
+  .dept-kenburns {
+    animation: dept-kenburns 22s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes dept-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes dept-kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.09);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dept-marquee,
+  .dept-kenburns {
+    animation: none;
+  }
+  .dept-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .pcard-media img,
+  .dept-tile img {
+    transition: none;
+  }
+}

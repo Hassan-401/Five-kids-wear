@@ -7,7 +7,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { products, type Product } from "../data/catalog";
+import { products, type Purchasable } from "../data/catalog";
+import { deptProducts } from "../data/departments";
+
+/** Kids + men's + women's catalogues in one list, so a cart line can point at
+ *  any of them. Each section still filters its own catalogue for browsing. */
+const everything: Purchasable[] = [...products, ...deptProducts];
 
 export type CartLine = {
   key: string;
@@ -31,11 +36,11 @@ type StoreValue = {
   cart: CartLine[];
   cartCount: number;
   subtotal: number;
-  addToCart: (product: Product, size: string, color: string, qty?: number) => void;
+  addToCart: (product: Purchasable, size: string, color: string, qty?: number) => void;
   updateQty: (key: string, qty: number) => void;
   removeLine: (key: string) => void;
   clearCart: () => void;
-  lineProduct: (line: CartLine) => Product | undefined;
+  lineProduct: (line: CartLine) => Purchasable | undefined;
 
   wishlist: string[];
   toggleWishlist: (productId: string) => void;
@@ -123,12 +128,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = usePersisted<DemoUser | null>("fkw.user", null);
 
   const lineProduct = useCallback(
-    (line: CartLine) => products.find((p) => p.id === line.productId),
+    (line: CartLine) => everything.find((p) => p.id === line.productId),
     [],
   );
 
   const addToCart = useCallback(
-    (product: Product, size: string, color: string, qty = 1) => {
+    (product: Purchasable, size: string, color: string, qty = 1) => {
       const key = `${product.id}|${size}|${color}`;
       setCart((prev) => {
         const found = prev.find((l) => l.key === key);
@@ -196,7 +201,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<StoreValue>(() => {
     const subtotal = cart.reduce((sum, line) => {
-      const p = products.find((x) => x.id === line.productId);
+      const p = everything.find((x) => x.id === line.productId);
       return sum + (p ? p.price * line.qty : 0);
     }, 0);
 

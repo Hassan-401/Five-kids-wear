@@ -57,6 +57,22 @@ export const categories: Category[] = [
   },
 ];
 
+export type Swatch = { nameAr: string; nameEn: string; hex: string };
+
+/** The minimum shape the cart needs. Kids products and department products
+ *  both satisfy it, so `StoreContext` can hold lines from either catalogue. */
+export type Purchasable = {
+  id: string;
+  slug: string;
+  nameAr: string;
+  nameEn: string;
+  price: number;
+  image: string;
+  sizes: string[];
+  colors: Swatch[];
+  dept?: "men" | "women";
+};
+
 export type Product = {
   id: string;
   slug: string;
@@ -70,7 +86,7 @@ export type Product = {
   category: CategoryId;
   gender: "boys" | "girls";
   sizes: string[];
-  colors: { nameAr: string; nameEn: string; hex: string }[];
+  colors: Swatch[];
   rating: number;
   reviews: number;
   isNew?: boolean;
@@ -377,7 +393,7 @@ export const governorates = [
 
 /** Resolves a cart line's stored (English) colour name to the active language. */
 export function colorLabel(
-  product: Product,
+  product: { colors: Swatch[] },
   storedName: string,
   pick: <T>(ar: T, en: T) => T,
 ) {

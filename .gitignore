@@ -9,3 +9,5 @@ tsconfig.tsbuildinfo
 /*.png
 /*.webm
 /products/
+/men/
+/women/

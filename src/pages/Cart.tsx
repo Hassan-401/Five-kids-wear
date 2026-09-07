@@ -4,6 +4,7 @@ import PageHeader from "../components/PageHeader";
 import { useLang } from "../i18n/LanguageContext";
 import { useStore } from "../context/StoreContext";
 import { colorLabel } from "../data/catalog";
+import { productHref } from "../data/departments";
 import { TrashIcon } from "../components/Icons";
 
 const SHIPPING = 60;
@@ -40,7 +41,7 @@ export default function Cart() {
                     className="card-soft flex items-center gap-4 p-4"
                   >
                     <Link
-                      to={`/product/${p.slug}`}
+                      to={productHref(p)}
                       className="shrink-0 w-24 h-24 rounded-2xl bg-pink-50 overflow-hidden"
                     >
                       <img
@@ -52,7 +53,7 @@ export default function Cart() {
 
                     <div className="flex-1 min-w-0">
                       <Link
-                        to={`/product/${p.slug}`}
+                        to={productHref(p)}
                         className="font-bold text-navy-600 hover:text-pink-600 transition line-clamp-2"
                       >
                         {pick(p.nameAr, p.nameEn)}
