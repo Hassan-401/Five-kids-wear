@@ -67,56 +67,43 @@ export default function DeptListing({ dept }: { dept: Dept }) {
   return (
     <DeptShell dept={dept}>
       <div ref={rootRef}>
-        {/* -------------------------------------------------------- banner */}
-        <section
-          className="border-b"
-          style={{ borderColor: "var(--d-line)", background: "var(--d-panel)" }}
-        >
-          <div className="dept-wrap grid md:grid-cols-[1.4fr_1fr] items-center gap-8 py-10 lg:py-14">
-            <div className={isWomen ? "text-center md:text-start" : ""}>
-              {/* breadcrumb */}
-              <nav
-                aria-label="breadcrumb"
-                className="flex flex-wrap items-center justify-center md:justify-start gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.16em]"
-                style={{ color: "var(--d-muted)" }}
-              >
-                <Link to="/" className="hover:opacity-70 transition">
-                  {t("common.home")}
-                </Link>
-                <span className="opacity-50">/</span>
-                <Link to={`/${dept}`} className="hover:opacity-70 transition">
-                  {pick(meta.name.ar, meta.name.en)}
-                </Link>
-                <span className="opacity-50">/</span>
-                <span style={{ color: "var(--d-ink)" }}>
-                  {pick(category.name.ar, category.name.en)}
-                </span>
-              </nav>
-
-              <h1 className="dept-h1 mt-5 text-3xl sm:text-5xl">
-                {pick(category.name.ar, category.name.en)}
-              </h1>
-              <p
-                className="mt-4 text-[0.92rem] leading-7 max-w-lg mx-auto md:mx-0"
-                style={{ color: "var(--d-muted)" }}
-              >
-                {pick(category.blurb.ar, category.blurb.en)}
-              </p>
-            </div>
-
-            <div
+        {/* --------------------------------------------------- page title */}
+        <section className="dept-wrap pt-10 pb-2">
+          <div className={isWomen ? "text-center" : ""}>
+            {/* breadcrumb */}
+            <nav
+              aria-label="breadcrumb"
               className={[
-                "hidden md:block overflow-hidden",
-                isWomen ? "dept-arch w-52 ms-auto aspect-[3/4]" : "aspect-[16/9]",
+                "flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.16em]",
+                isWomen ? "justify-center" : "",
               ].join(" ")}
+              style={{ color: "var(--d-muted)" }}
             >
-              <img
-                src={category.image}
-                alt=""
-                aria-hidden="true"
-                className="w-full h-full object-cover"
-              />
-            </div>
+              <Link to="/" className="hover:opacity-70 transition">
+                {t("common.home")}
+              </Link>
+              <span className="opacity-50">/</span>
+              <Link to={`/${dept}`} className="hover:opacity-70 transition">
+                {pick(meta.name.ar, meta.name.en)}
+              </Link>
+              <span className="opacity-50">/</span>
+              <span style={{ color: "var(--d-ink)" }}>
+                {pick(category.name.ar, category.name.en)}
+              </span>
+            </nav>
+
+            <h1 className="dept-h1 mt-5 text-3xl sm:text-4xl">
+              {pick(category.name.ar, category.name.en)}
+            </h1>
+            <p
+              className={[
+                "mt-3 text-[0.92rem] leading-7 max-w-lg",
+                isWomen ? "mx-auto" : "",
+              ].join(" ")}
+              style={{ color: "var(--d-muted)" }}
+            >
+              {pick(category.blurb.ar, category.blurb.en)}
+            </p>
           </div>
         </section>
 

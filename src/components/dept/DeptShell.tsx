@@ -5,7 +5,8 @@ import { ArrowRight } from "../Icons";
 
 /**
  * Wraps a department page in its own design system and prints the section's
- * sub-navigation. `.dept-men` / `.dept-women` carry the palette + type tokens.
+ * sub-navigation. `.dept-men` / `.dept-women` carry the type + shape tokens;
+ * the palette itself stays neutral (white page, near-black ink).
  */
 export default function DeptShell({
   dept,
@@ -18,7 +19,6 @@ export default function DeptShell({
     <div className={`dept dept-${dept}`}>
       <DeptNav dept={dept} />
       {children}
-      <DeptService dept={dept} />
     </div>
   );
 }
@@ -55,7 +55,9 @@ export function DeptNav({ dept }: { dept: Dept }) {
               className={({ isActive }) =>
                 [
                   "shrink-0 whitespace-nowrap text-[0.78rem] font-semibold transition",
-                  isActive ? "opacity-100 underline underline-offset-8" : "opacity-60 hover:opacity-100",
+                  isActive
+                    ? "opacity-100 underline underline-offset-8"
+                    : "opacity-60 hover:opacity-100",
                 ].join(" ")
               }
             >
@@ -73,93 +75,5 @@ export function DeptNav({ dept }: { dept: Dept }) {
         </Link>
       </div>
     </nav>
-  );
-}
-
-/** Small service promises strip, themed per department. */
-function DeptService({ dept }: { dept: Dept }) {
-  const { pick } = useLang();
-
-  const items = [
-    {
-      ar: "شحن لكل محافظات مصر",
-      en: "Delivery across Egypt",
-      subAr: "٢–٤ أيام عمل",
-      subEn: "2–4 working days",
-    },
-    {
-      ar: "استبدال خلال ١٤ يوم",
-      en: "14-day exchanges",
-      subAr: "من غير أسئلة",
-      subEn: "No questions asked",
-    },
-    {
-      ar: "الدفع عند الاستلام",
-      en: "Cash on delivery",
-      subAr: "أو بالبطاقة",
-      subEn: "Or pay by card",
-    },
-    {
-      ar: "خامات مختارة",
-      en: "Selected fabrics",
-      subAr: "مفحوصة قطعة قطعة",
-      subEn: "Checked piece by piece",
-    },
-  ];
-
-  return (
-    <section
-      className="border-t"
-      style={{ borderColor: "var(--d-line)" }}
-    >
-      <div className="dept-wrap grid grid-cols-2 lg:grid-cols-4">
-        {items.map((it, i) => (
-          <div
-            key={it.en}
-            className={[
-              "py-8 px-2 text-center",
-              i % 2 === 1 ? "border-s" : "",
-              i >= 2 ? "border-t lg:border-t-0" : "",
-              dept === "men" && i === 2 ? "lg:border-s" : "",
-              dept === "women" && i === 2 ? "lg:border-s" : "",
-            ].join(" ")}
-            style={{ borderColor: "var(--d-line)" }}
-          >
-            <p className="text-sm font-bold">{pick(it.ar, it.en)}</p>
-            <p
-              className="text-xs mt-1.5"
-              style={{ color: "var(--d-muted)" }}
-            >
-              {pick(it.subAr, it.subEn)}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-/** Endless word strip used between sections. */
-export function DeptMarquee({ text, tone = "deep" }: { text: string; tone?: "deep" | "soft" }) {
-  const words = Array.from({ length: 2 }).flatMap(() => text.split(" · "));
-
-  return (
-    <div
-      className="overflow-hidden py-3.5"
-      style={
-        tone === "deep"
-          ? { background: "var(--d-deep)", color: "var(--d-page)" }
-          : { background: "var(--d-panel)", color: "var(--d-ink)" }
-      }
-    >
-      <div className="dept-marquee text-[0.72rem] font-bold uppercase tracking-[0.28em]">
-        {words.map((w, i) => (
-          <span key={`${w}-${i}`} className="flex items-center gap-6">
-            {w}
-            <span className="opacity-40">•</span>
-          </span>
-        ))}
-      </div>
-    </div>
   );
 }
