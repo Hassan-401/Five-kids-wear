@@ -12,6 +12,7 @@ import TransparentVideo from "./TransparentVideo";
 import PhotoCollage from "./PhotoCollage";
 import usePointerParallax from "./usePointerParallax";
 import { CloudDivider, Crown, Heart, PaperPlane, Sparkle } from "./Decor";
+import Wordmark from "./Wordmark";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook", color: "text-[#1877f2]" },
@@ -51,7 +52,7 @@ export default function Hero() {
       <div className="container-x relative py-10 sm:py-14 lg:py-16">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-6">
           {/* teddy + copy — the start half of the split */}
-          <div className="order-1 lg:w-1/2 shrink-0 flex flex-col items-center text-center gap-3.5">
+          <div className="order-1 lg:w-1/2 shrink-0 flex flex-col items-center text-center gap-3">
             <p className="badge-shimmer inline-flex items-center justify-center text-center leading-snug gap-2 rounded-3xl sm:rounded-full bg-white/85 backdrop-blur px-4 py-2 text-xs sm:text-sm font-bold text-navy-600 shadow-sm border border-white anim-pop">
               <Sparkle className="w-4 h-4 shrink-0" />
               {t("hero.badge")}
@@ -70,11 +71,14 @@ export default function Hero() {
               />
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-extrabold leading-snug">
+            {/* brand name, set as type so it reads at any width */}
+            <Wordmark size="lg" className="!text-center anim-pop" />
+
+            <h1 className="text-xl sm:text-2xl font-extrabold leading-snug">
               <span className="text-pink-600">{t("hero.title1")} </span>
               <span className="text-sky-500 whitespace-nowrap">
                 {t("hero.title2")}
-                <Heart className="inline-block w-5 h-5 ms-2 -mb-0.5" color="#ec3f8c" />
+                <Heart className="inline-block w-4 h-4 ms-2 -mb-0.5" color="#ec3f8c" />
               </span>
             </h1>
 

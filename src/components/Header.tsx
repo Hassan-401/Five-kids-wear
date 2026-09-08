@@ -16,6 +16,7 @@ import {
   UserIcon,
   YoutubeIcon,
 } from "./Icons";
+import Wordmark from "./Wordmark";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook" },
@@ -189,12 +190,21 @@ export default function Header() {
             </NavLink>
           </nav>
 
-          <Link to="/" className="shrink-0 ms-auto lg:ms-0 -mb-7 -mt-1">
+          <Link
+            to="/"
+            dir="ltr"
+            className="shrink-0 ms-auto lg:ms-0 flex items-center gap-2"
+            aria-label={t("brand.name")}
+          >
             <img
               src="/images/logo.png"
-              alt={t("brand.name")}
-              className="h-20 sm:h-24 w-auto drop-shadow-sm"
+              alt=""
+              aria-hidden="true"
+              className="h-20 sm:h-24 w-auto drop-shadow-sm -mb-7 -mt-1"
             />
+            {/* the `lg` band is tight on width, so the name shrinks there */}
+            <Wordmark className="lg:hidden xl:block" />
+            <Wordmark size="sm" className="hidden lg:block xl:hidden" />
           </Link>
         </div>
       </div>
@@ -209,7 +219,10 @@ export default function Header() {
           />
           <div className="absolute inset-y-0 end-0 w-[82%] max-w-xs bg-white shadow-2xl p-5 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <img src="/images/logo.png" alt="" className="h-14 w-auto" />
+              <Link to="/" dir="ltr" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
+                <img src="/images/logo.png" alt="" aria-hidden="true" className="h-14 w-auto" />
+                <Wordmark size="sm" />
+              </Link>
               <button
                 onClick={() => setMenuOpen(false)}
                 className="grid place-items-center w-9 h-9 rounded-full bg-pink-50 text-pink-600"
