@@ -29,7 +29,7 @@ const navItems = [
   { to: "/category/boys", key: "nav.boys" },
   { to: "/category/girls", key: "nav.girls" },
   { to: "/category/pajamas", key: "nav.pajamas" },
-  { to: "/category/accessories", key: "nav.accessories" },
+  { to: "/category/newborn", key: "nav.newborn" },
   { to: "/men", key: "nav.men" },
   { to: "/women", key: "nav.women" },
 ];

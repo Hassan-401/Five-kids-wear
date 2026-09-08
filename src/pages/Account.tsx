@@ -168,7 +168,7 @@ export default function Account() {
                                   src={item.image}
                                   alt=""
                                   aria-hidden="true"
-                                  className="w-full h-full object-contain p-1"
+                                  className="w-full h-full object-cover"
                                 />
                               </div>
                               <div className="text-sm">

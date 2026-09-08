@@ -31,7 +31,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
         )}
         {discount > 0 && (
-          <span className="rounded-full bg-pink-500 text-white text-[11px] font-extrabold px-2.5 py-1 shadow-sm">
+          <span dir="ltr" className="rounded-full bg-pink-500 text-white text-[11px] font-extrabold px-2.5 py-1 shadow-sm">
             -{discount}%
           </span>
         )}
@@ -57,7 +57,7 @@ export default function ProductCard({ product }: { product: Product }) {
             src={product.image}
             alt={pick(product.nameAr, product.nameEn)}
             loading="lazy"
-            className="w-full h-full object-contain p-3 transition duration-500 group-hover:scale-105"
+            className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
           />
         </div>
       </Link>

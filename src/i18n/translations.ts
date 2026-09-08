@@ -54,7 +54,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.boys": "أولاد",
     "nav.girls": "بنات",
     "nav.pajamas": "بيجامات",
-    "nav.accessories": "إكسسوارات",
+    "nav.newborn": "مواليد",
     "nav.offers": "عروض خاصة",
     "nav.men": "رجالي",
     "nav.women": "نسائي",
@@ -73,7 +73,7 @@ export const translations: Record<Lang, Dict> = {
     "cat.boys": "ملابس أولاد",
     "cat.girls": "ملابس بنات",
     "cat.pajamas": "بيجامات",
-    "cat.accessories": "إكسسوارات",
+    "cat.newborn": "مواليد",
     "cat.offers": "عروض خاصة",
 
     /* promo slider */
@@ -283,7 +283,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.boys": "Boys",
     "nav.girls": "Girls",
     "nav.pajamas": "Pajamas",
-    "nav.accessories": "Accessories",
+    "nav.newborn": "Newborn",
     "nav.offers": "Special offers",
     "nav.men": "Men",
     "nav.women": "Women",
@@ -300,7 +300,7 @@ export const translations: Record<Lang, Dict> = {
     "cat.boys": "Boys clothing",
     "cat.girls": "Girls clothing",
     "cat.pajamas": "Pajamas",
-    "cat.accessories": "Accessories",
+    "cat.newborn": "Newborn",
     "cat.offers": "Special offers",
 
     "promo.1.title": "Standout looks",

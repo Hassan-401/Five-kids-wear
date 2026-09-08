@@ -189,7 +189,7 @@ export default function Checkout() {
                         src={p.image}
                         alt=""
                         aria-hidden="true"
-                        className="w-full h-full object-contain p-1"
+                        className="w-full h-full object-cover"
                       />
                       <span className="absolute -top-1 -end-1 grid place-items-center w-5 h-5 rounded-full bg-pink-500 text-white text-[11px] font-bold">
                         {line.qty}

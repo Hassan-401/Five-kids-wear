@@ -9,7 +9,7 @@ import { SearchIcon } from "../components/Icons";
 
 type Sort = "newest" | "priceAsc" | "priceDesc" | "popular";
 
-const MAX_PRICE = 600;
+const MAX_PRICE = 450;
 
 export default function Shop({
   fixedCategory,
@@ -134,7 +134,7 @@ export default function Shop({
             <FilterBlock label={`${t("shop.priceRange")} — ${maxPrice}`}>
               <input
                 type="range"
-                min={300}
+                min={100}
                 max={MAX_PRICE}
                 step={10}
                 value={maxPrice}

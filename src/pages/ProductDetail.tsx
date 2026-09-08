@@ -27,6 +27,7 @@ export default function ProductDetail() {
   const [size, setSize] = useState<string>("");
   const [colorIdx, setColorIdx] = useState(0);
   const [qty, setQty] = useState(1);
+  const [shot, setShot] = useState(0);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState(false);
 
@@ -77,36 +78,42 @@ export default function ProductDetail() {
                 </span>
               )}
               {discount > 0 && (
-                <span className="rounded-full bg-pink-500 text-white text-xs font-extrabold px-3 py-1">
+                <span dir="ltr" className="rounded-full bg-pink-500 text-white text-xs font-extrabold px-3 py-1">
                   -{discount}%
                 </span>
               )}
             </div>
             <div className="aspect-square rounded-3xl bg-gradient-to-b from-pink-50 to-white grid place-items-center overflow-hidden">
               <img
-                src={product.image}
+                key={product.images[shot]}
+                src={product.images[shot]}
                 alt={pick(product.nameAr, product.nameEn)}
-                className="w-full h-full object-contain p-4"
+                className="w-full h-full object-cover"
               />
             </div>
-            <div className="mt-4 grid grid-cols-4 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className={[
-                    "aspect-square rounded-2xl bg-pink-50 overflow-hidden border-2",
-                    i === 0 ? "border-pink-400" : "border-transparent",
-                  ].join(" ")}
-                >
-                  <img
-                    src={product.image}
-                    alt=""
-                    aria-hidden="true"
-                    className="w-full h-full object-contain p-1.5"
-                  />
-                </div>
-              ))}
-            </div>
+            {product.images.length > 1 && (
+              <div className="mt-4 grid grid-cols-4 gap-3">
+                {product.images.map((src, i) => (
+                  <button
+                    key={src}
+                    onClick={() => setShot(i)}
+                    aria-label={`${pick("صورة", "Image")} ${i + 1}`}
+                    aria-pressed={shot === i}
+                    className={[
+                      "aspect-square rounded-2xl bg-pink-50 overflow-hidden border-2 transition",
+                      shot === i ? "border-pink-400" : "border-transparent hover:border-pink-200",
+                    ].join(" ")}
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      aria-hidden="true"
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* details */}

@@ -25,12 +25,22 @@ export default function CategoryGrid() {
               cat.tint,
             ].join(" ")}
           >
-            <div className="w-full aspect-square grid place-items-center">
+            <div
+              className={[
+                "w-full aspect-square grid place-items-center",
+                cat.photo ? "rounded-2xl overflow-hidden bg-white/60" : "",
+              ].join(" ")}
+            >
               <img
                 src={cat.image}
                 alt={pick(cat.nameAr, cat.nameEn)}
                 loading="lazy"
-                className="max-h-full w-auto object-contain transition duration-500 group-hover:scale-110"
+                className={[
+                  "transition duration-500 group-hover:scale-110",
+                  cat.photo
+                    ? "w-full h-full object-cover"
+                    : "max-h-full w-auto object-contain",
+                ].join(" ")}
               />
             </div>
 

@@ -47,7 +47,7 @@ export default function Cart() {
                       <img
                         src={p.image}
                         alt={pick(p.nameAr, p.nameEn)}
-                        className="w-full h-full object-contain p-1.5"
+                        className="w-full h-full object-cover"
                       />
                     </Link>
 

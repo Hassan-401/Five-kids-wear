@@ -18,13 +18,13 @@ type Card = {
 };
 
 const cards: Card[] = [
-  { slug: "little-princess", x: 2, y: 1, w: 25, rotate: -7, depth: 1.5, delay: 0.05, bob: 5.5, z: 10 },
-  { slug: "dino-dream", x: 56, y: 0, w: 25, rotate: 6, depth: 1.3, delay: 0.15, bob: 6.4, z: 10 },
-  { slug: "lovely-bear", x: -3, y: 33, w: 24, rotate: -4, depth: 1.8, delay: 0.25, bob: 5.1, z: 8 },
+  { slug: "tom-jerry-pajama", x: 2, y: 1, w: 25, rotate: -7, depth: 1.5, delay: 0.05, bob: 5.5, z: 10 },
+  { slug: "blue-dragon-pajama", x: 56, y: 0, w: 25, rotate: 6, depth: 1.3, delay: 0.15, bob: 6.4, z: 10 },
+  { slug: "teddy-bows-pajama", x: -3, y: 33, w: 24, rotate: -4, depth: 1.8, delay: 0.25, bob: 5.1, z: 8 },
   { slug: "lifestyle", x: 26, y: 15, w: 36, rotate: 2, depth: 0.5, delay: 0, bob: 7.2, z: 20 },
-  { slug: "urban-kid", x: 66, y: 32, w: 25, rotate: 7, depth: 1.7, delay: 0.32, bob: 5.8, z: 8 },
-  { slug: "sweet-bloom", x: 10, y: 64, w: 25, rotate: 5, depth: 1.1, delay: 0.4, bob: 6.8, z: 12 },
-  { slug: "mini-trend", x: 48, y: 66, w: 25, rotate: -6, depth: 1.4, delay: 0.48, bob: 6.1, z: 12 },
+  { slug: "lion-king-pajama", x: 66, y: 32, w: 25, rotate: 7, depth: 1.7, delay: 0.32, bob: 5.8, z: 8 },
+  { slug: "girl-bodysuit-pack-panda", x: 10, y: 64, w: 25, rotate: 5, depth: 1.1, delay: 0.4, bob: 6.8, z: 12 },
+  { slug: "snoopy-pajama", x: 48, y: 66, w: 25, rotate: -6, depth: 1.4, delay: 0.48, bob: 6.1, z: 12 },
 ];
 
 export default function PhotoCollage() {
