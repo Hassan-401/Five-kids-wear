@@ -6,7 +6,7 @@ import { colorLabel, governorates } from "../data/catalog";
 import { useLang } from "../i18n/LanguageContext";
 import { useStore } from "../context/StoreContext";
 import { CheckIcon, ShieldIcon, TruckIcon } from "../components/Icons";
-import { Heart } from "../components/Decor";
+import { Star } from "../components/Decor";
 
 const SHIPPING = 60;
 const FREE_SHIPPING_OVER = 1000;
@@ -37,8 +37,8 @@ export default function Checkout() {
         <PageHeader title={t("checkout.title")} crumbs={[{ label: t("checkout.title") }]} />
         <div className="container-x py-14">
           <div className="card-soft max-w-lg mx-auto p-12 text-center relative overflow-hidden">
-            <Heart className="absolute top-6 start-8 w-5 h-5 anim-float" color="#ffb3d2" />
-            <Heart className="absolute bottom-8 end-10 w-6 h-6 anim-float-slow" color="#ff8ac0" />
+            <Star className="absolute top-6 start-8 w-5 h-5 anim-float" color="#ffb3d2" />
+            <Star className="absolute bottom-8 end-10 w-6 h-6 anim-float-slow" color="#ff8ac0" />
 
             <span className="grid place-items-center w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-600">
               <CheckIcon className="w-10 h-10" />

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLang } from "../i18n/LanguageContext";
 import { MailIcon } from "./Icons";
-import { CloudDivider, Heart, Sparkle } from "./Decor";
+import { Bolt, CloudDivider, Sparkle } from "./Decor";
 
 export default function Newsletter() {
   const { t } = useLang();
@@ -16,16 +16,16 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="relative bg-gradient-to-l from-sky-100 via-pink-50 to-pink-100 mt-16">
-      <CloudDivider className="absolute -top-px inset-x-0 w-full h-10 sm:h-14" fill="#fffaf5" />
+    <section className="relative bg-gradient-to-l from-sky-100 via-sky-50 to-pink-100 mt-16">
+      <CloudDivider className="absolute -top-px inset-x-0 w-full h-10 sm:h-14" fill="#f6fbff" />
 
       <div className="container-x relative pt-20 pb-16">
-        <Sparkle className="absolute top-14 start-[20%] w-6 h-6 anim-float-slow" />
-        <Heart className="absolute top-24 end-[24%] w-5 h-5 anim-float" color="#ff8ac0" />
+        <Sparkle className="absolute top-14 start-[20%] w-6 h-6 anim-twinkle" />
+        <Bolt className="absolute top-24 end-[24%] w-5 h-5 anim-float" color="#ff8ac0" />
 
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center gap-6 md:gap-10 text-center md:text-start">
           <div className="flex items-center gap-4">
-            <span className="grid place-items-center shrink-0 w-16 h-16 rounded-3xl bg-pink-500 text-white shadow-soft">
+            <span className="grid place-items-center shrink-0 w-16 h-16 rounded-3xl bg-sky-500 text-white shadow-[0_5px_0_var(--color-sky-700)]">
               <MailIcon className="w-8 h-8" />
             </span>
             <div>

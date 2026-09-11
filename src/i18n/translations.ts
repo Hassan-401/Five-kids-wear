@@ -5,8 +5,8 @@ type Dict = Record<string, string>;
 export const translations: Record<Lang, Dict> = {
   ar: {
     /* generic */
-    "brand.name": "The Five Kids Wear",
-    "brand.tagline": "ملابس قطنية ناعمة لأطفال سعداء",
+    "brand.name": "Five PJ Masks",
+    "brand.tagline": "ملابس أطفال بروح الأبطال",
     "common.currency": "ج.م",
     "common.shopNow": "تسوق الآن",
     "common.viewAll": "عرض الكل",
@@ -63,10 +63,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.contact": "تواصل معنا",
 
     /* hero */
-    "hero.badge": "شحن سريع لكل محافظات مصر — أجود الخامات القطنية",
-    "hero.title1": "ملابس أطفال",
-    "hero.title2": "بكل حب",
-    "hero.subtitle": "أجود الخامات .. ألوان مبهجة .. تصميمات عصرية",
+    "hero.subtitle": "أبطال بالليل .. ومرتاحين طول اليوم",
 
     /* categories */
     "cat.title": "تسوق حسب الفئة",
@@ -75,6 +72,10 @@ export const translations: Record<Lang, Dict> = {
     "cat.pajamas": "بيجامات",
     "cat.newborn": "مواليد",
     "cat.offers": "عروض خاصة",
+
+    /* our products */
+    "ourProducts.title": "منتجاتنا",
+    "ourProducts.sub": "تصفّح تشكيلتنا من ملابس الأطفال",
 
     /* promo slider */
     "promo.1.title": "إطلالات مميزة",
@@ -169,7 +170,7 @@ export const translations: Record<Lang, Dict> = {
     "auth.loginTitle": "أهلاً بعودتك",
     "auth.loginSub": "سجّل الدخول لمتابعة التسوق",
     "auth.registerTitle": "أنشئ حسابك",
-    "auth.registerSub": "انضم لعائلة The Five Kids Wear",
+    "auth.registerSub": "انضم لعائلة Five PJ Masks",
     "auth.password": "كلمة المرور",
     "auth.confirmPassword": "تأكيد كلمة المرور",
     "auth.forgot": "نسيت كلمة المرور؟",
@@ -189,7 +190,7 @@ export const translations: Record<Lang, Dict> = {
     /* about */
     "about.title": "من نحن",
     "about.lead":
-      "The Five Kids Wear علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
+      "Five PJ Masks علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
     "about.story.title": "قصتنا",
     "about.story.body":
       "بدأت الفكرة من خمسة أطفال .. ومن رغبة بسيطة في أن يجد كل أب وأم ملابس مريحة وجميلة وبسعر مناسب. اليوم صرنا عائلة كبيرة تضم آلاف الأمهات في كل محافظات مصر.",
@@ -235,8 +236,8 @@ export const translations: Record<Lang, Dict> = {
   },
 
   en: {
-    "brand.name": "The Five Kids Wear",
-    "brand.tagline": "Soft cotton clothes for happy kids",
+    "brand.name": "Five PJ Masks",
+    "brand.tagline": "Kids clothes with a superhero spirit",
     "common.currency": "EGP",
     "common.shopNow": "Shop Now",
     "common.viewAll": "View all",
@@ -291,10 +292,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.about": "About us",
     "nav.contact": "Contact us",
 
-    "hero.badge": "Fast delivery across Egypt — finest cotton fabrics",
-    "hero.title1": "Kids clothes",
-    "hero.title2": "made with love",
-    "hero.subtitle": "Finest fabrics .. joyful colors .. modern designs",
+    "hero.subtitle": "Heroes by night .. comfy all day long",
 
     "cat.title": "Shop by category",
     "cat.boys": "Boys clothing",
@@ -302,6 +300,9 @@ export const translations: Record<Lang, Dict> = {
     "cat.pajamas": "Pajamas",
     "cat.newborn": "Newborn",
     "cat.offers": "Special offers",
+
+    "ourProducts.title": "Our products",
+    "ourProducts.sub": "Browse our kids' collection",
 
     "promo.1.title": "Standout looks",
     "promo.1.sub": "for every occasion",
@@ -386,7 +387,7 @@ export const translations: Record<Lang, Dict> = {
     "auth.loginTitle": "Welcome back",
     "auth.loginSub": "Sign in to continue shopping",
     "auth.registerTitle": "Create your account",
-    "auth.registerSub": "Join The Five Kids Wear family",
+    "auth.registerSub": "Join Five PJ Masks family",
     "auth.password": "Password",
     "auth.confirmPassword": "Confirm password",
     "auth.forgot": "Forgot password?",
@@ -404,7 +405,7 @@ export const translations: Record<Lang, Dict> = {
 
     "about.title": "About us",
     "about.lead":
-      "The Five Kids Wear is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
+      "Five PJ Masks is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
     "about.story.title": "Our story",
     "about.story.body":
       "It started with five kids .. and a simple wish: that every parent could find comfortable, beautiful clothes at a fair price. Today we are a big family of thousands of mums across Egypt.",

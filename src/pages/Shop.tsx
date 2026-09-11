@@ -198,7 +198,7 @@ export default function Shop({
             {list.length === 0 ? (
               <div className="card-soft p-14 text-center">
                 <img
-                  src="/images/avatars/bear.png"
+                  src="/images/characters/catboy.webp"
                   alt=""
                   aria-hidden="true"
                   className="w-32 mx-auto mb-4 opacity-90"

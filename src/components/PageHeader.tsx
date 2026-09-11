@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
-import { CloudDivider, FloatingHearts } from "./Decor";
+import { CloudDivider, FloatingStars } from "./Decor";
 
 type Crumb = { label: string; to?: string };
 
@@ -16,8 +16,9 @@ export default function PageHeader({
   const { t } = useLang();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-l from-sky-100 via-pink-50 to-pink-100 pt-10 pb-16">
-      <FloatingHearts />
+    <section className="relative overflow-hidden bg-gradient-to-l from-sky-100 via-sky-50 to-pink-100 pt-10 pb-16">
+      <div aria-hidden="true" className="absolute inset-0 star-dust" />
+      <FloatingStars />
       <div className="container-x relative text-center">
         <nav
           aria-label="breadcrumb"
@@ -28,7 +29,7 @@ export default function PageHeader({
           </Link>
           {crumbs.map((c) => (
             <span key={c.label} className="flex items-center gap-2">
-              <span className="text-pink-300">•</span>
+              <span className="text-sky-400">•</span>
               {c.to ? (
                 <Link to={c.to} className="hover:text-pink-600 transition">
                   {c.label}
@@ -40,18 +41,18 @@ export default function PageHeader({
           ))}
         </nav>
 
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-pink-600 drop-shadow-sm">
+        <h1 className="toon-title text-3xl sm:text-4xl md:text-5xl text-pink-500">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-3 max-w-2xl mx-auto font-semibold text-navy-600/80">
+          <p className="mt-4 max-w-2xl mx-auto font-semibold text-navy-600/80">
             {subtitle}
           </p>
         )}
       </div>
       <CloudDivider
         className="absolute -bottom-px inset-x-0 w-full h-8 sm:h-12"
-        fill="#fffaf5"
+        fill="#f6fbff"
       />
     </section>
   );

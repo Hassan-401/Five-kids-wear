@@ -111,11 +111,11 @@ const termsSections: Section[] = [
   {
     ar: [
       "الملكية الفكرية",
-      "جميع الصور والتصميمات والشعارات على الموقع مملوكة لـ The Five Kids Wear ولا يجوز استخدامها دون إذن.",
+      "جميع الصور والتصميمات والشعارات على الموقع مملوكة لـ Five PJ Masks ولا يجوز استخدامها دون إذن.",
     ],
     en: [
       "Intellectual property",
-      "All images, designs and logos on this site belong to The Five Kids Wear and may not be used without permission.",
+      "All images, designs and logos on this site belong to Five PJ Masks and may not be used without permission.",
     ],
   },
 ];

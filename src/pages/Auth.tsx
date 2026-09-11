@@ -9,7 +9,7 @@ import {
   MailIcon,
   UserIcon,
 } from "../components/Icons";
-import { Heart } from "../components/Decor";
+import { Star } from "../components/Decor";
 
 export default function Auth({ mode }: { mode: "login" | "register" }) {
   const { t } = useLang();
@@ -39,13 +39,13 @@ export default function Auth({ mode }: { mode: "login" | "register" }) {
 
       <div className="container-x py-12">
         <div className="card-soft max-w-md mx-auto p-8 relative overflow-hidden">
-          <Heart className="absolute top-5 end-6 w-5 h-5 anim-float" color="#ffb3d2" />
+          <Star className="absolute top-5 end-6 w-5 h-5 anim-float" color="#ffb3d2" />
 
           <img
-            src="/images/logo.png"
+            src="/images/logo.webp"
             alt=""
             aria-hidden="true"
-            className="w-28 mx-auto -mt-2 mb-2"
+            className="w-40 mx-auto -mt-2 mb-3"
           />
 
           <form onSubmit={submit} className="flex flex-col gap-4">

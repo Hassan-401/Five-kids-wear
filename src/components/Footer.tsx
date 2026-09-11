@@ -7,7 +7,7 @@ import {
   YoutubeIcon,
   WhatsappIcon,
 } from "./Icons";
-import { Heart } from "./Decor";
+import { Moon, Sparkle, Star } from "./Decor";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook" },
@@ -30,16 +30,18 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative overflow-hidden bg-gradient-to-b from-pink-50 to-pink-100 pt-14 pb-8 mt-4">
-      <Heart className="absolute top-10 start-[12%] w-6 h-6 anim-float-slow" color="#ffc4da" />
-      <Heart className="absolute bottom-16 end-[10%] w-5 h-5 anim-float" color="#ff8ac0" />
+    <footer className="relative overflow-hidden bg-gradient-to-b from-sky-100 to-pink-100 pt-14 pb-8 mt-4">
+      <div aria-hidden="true" className="absolute inset-0 star-dust opacity-70" />
+      <Moon className="absolute top-8 start-[8%] w-10 h-10 anim-float-slow drop-shadow-[0_0_14px_rgba(255,226,138,.9)]" />
+      <Sparkle className="absolute top-12 end-[30%] w-6 h-6 anim-twinkle" color="#ffffff" />
+      <Star className="absolute bottom-20 start-[24%] w-5 h-5 anim-twinkle" color="#ff8ac0" />
 
-      {/* paper plane trailing a dashed heart */}
+      {/* Owlette gliding in from the corner beside the logo */}
       <img
-        src="/images/avatars/arrow.png"
+        src="/images/characters/owlette.webp"
         alt=""
         aria-hidden="true"
-        className="hidden md:block absolute bottom-4 start-[1.5%] w-36 lg:w-48 select-none pointer-events-none anim-float-slow"
+        className="hidden md:block absolute bottom-6 end-[1.5%] w-32 lg:w-40 select-none pointer-events-none anim-float-slow drop-shadow-[0_16px_18px_rgba(34,53,140,.2)]"
       />
 
       <div className="container-x relative">
@@ -55,7 +57,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="grid place-items-center w-10 h-10 rounded-full bg-white text-pink-500 shadow-sm hover:bg-pink-500 hover:text-white hover:-translate-y-0.5 transition"
+                  className="grid place-items-center w-10 h-10 rounded-full bg-white text-sky-600 shadow-sm hover:bg-sky-500 hover:text-white hover:-translate-y-0.5 transition"
                 >
                   <Icon className="w-5 h-5" />
                 </a>
@@ -76,7 +78,7 @@ export default function Footer() {
                     to={l.to}
                     className="inline-flex items-center gap-2 text-navy-600 hover:text-pink-600 font-semibold transition"
                   >
-                    <Heart className="w-3 h-3" color="#ff8ac0" />
+                    <Star className="w-3.5 h-3.5" color="#4cc3f1" />
                     {t(l.key)}
                   </Link>
                 </li>
@@ -86,15 +88,15 @@ export default function Footer() {
 
           {/* brand */}
           <div className="flex flex-col items-center md:items-start gap-3 order-1 md:order-3">
-            <img src="/images/logo.png" alt={t("brand.name")} className="h-28 w-auto" />
+            <img src="/images/logo.webp" alt={t("brand.name")} className="h-32 w-auto" />
             <p className="text-sm font-semibold text-navy-600/80">
               {t("brand.tagline")}
             </p>
           </div>
         </div>
 
-        <div className="mt-10 pt-5 border-t border-pink-200/70 text-center text-sm text-navy-600/70 font-semibold">
-          {t("footer.rights")} <span dir="ltr">© {year} Five Kids Wear.</span>
+        <div className="mt-10 pt-5 border-t border-sky-200 text-center text-sm text-navy-600/70 font-semibold">
+          {t("footer.rights")} <span dir="ltr">© {year} Five PJ Masks.</span>
         </div>
       </div>
     </footer>

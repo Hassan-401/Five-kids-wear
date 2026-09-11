@@ -170,7 +170,7 @@ export function EmptyState({
   return (
     <div className="card-soft max-w-lg mx-auto p-12 text-center">
       <img
-        src="/images/avatars/bear.png"
+        src="/images/characters/gekko.webp"
         alt=""
         aria-hidden="true"
         className="w-40 mx-auto mb-4 anim-float-slow"

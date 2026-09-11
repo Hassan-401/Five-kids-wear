@@ -13,7 +13,7 @@ import {
   WhatsappIcon,
   YoutubeIcon,
 } from "../components/Icons";
-import { Heart } from "../components/Decor";
+import { Star } from "../components/Decor";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook" },
@@ -51,7 +51,7 @@ export default function Contact() {
       <div className="container-x py-12">
         <div className="grid lg:grid-cols-[1fr_360px] gap-8 items-start">
           <form onSubmit={submit} className="card-soft p-6 sm:p-8 relative overflow-hidden">
-            <Heart className="absolute top-5 end-6 w-5 h-5 anim-float" color="#ffb3d2" />
+            <Star className="absolute top-5 end-6 w-5 h-5 anim-float" color="#ffb3d2" />
 
             <div className="grid sm:grid-cols-2 gap-4">
               <label className="flex flex-col gap-1.5">

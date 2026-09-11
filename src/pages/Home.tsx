@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Hero from "../components/Hero";
 import CategoryGrid, { SectionTitle } from "../components/CategoryGrid";
 import PromoSlider from "../components/PromoSlider";
+import ProductsMarquee from "../components/ProductsMarquee";
 import ProductCard from "../components/ProductCard";
 import FeatureStrip from "../components/FeatureStrip";
 import Newsletter from "../components/Newsletter";
@@ -24,6 +25,7 @@ export default function Home() {
     <>
       <Hero />
       <CategoryGrid />
+      <ProductsMarquee />
       <PromoSlider />
 
       <section className="container-x py-10 sm:py-14">

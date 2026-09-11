@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import DeptShell from "../../components/dept/DeptShell";
 import DeptProductCard from "../../components/dept/DeptProductCard";
+import DeptEmpty from "../../components/dept/DeptEmpty";
 import useReveal from "../../components/dept/useReveal";
 import { useLang } from "../../i18n/LanguageContext";
 import {
@@ -71,20 +72,26 @@ export default function WomenHome() {
             </h2>
           </header>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            {newIn.map((p) => (
-              <div key={p.id} className="dept-reveal">
-                <DeptProductCard product={p} />
+          {newIn.length === 0 ? (
+            <DeptEmpty />
+          ) : (
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                {newIn.map((p) => (
+                  <div key={p.id} className="dept-reveal">
+                    <DeptProductCard product={p} />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          <div className="mt-11 text-center">
-            <Link to="/women/dresses" className="dept-link">
-              {pick("عرض الكل", "View all")}
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-            </Link>
-          </div>
+              <div className="mt-11 text-center">
+                <Link to="/women/dresses" className="dept-link">
+                  {pick("عرض الكل", "View all")}
+                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                </Link>
+              </div>
+            </>
+          )}
         </section>
       </div>
     </DeptShell>

@@ -17,7 +17,7 @@ type Banner = {
 // Drop more artwork in here and the arrows and dots turn themselves back on.
 const banners: Banner[] = [
   {
-    src: "/images/promo-kids.png",
+    src: "/images/promo-home.webp",
     width: 2170,
     height: 725,
     to: "/shop",

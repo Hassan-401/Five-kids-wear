@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import DeptShell from "../../components/dept/DeptShell";
 import DeptProductCard from "../../components/dept/DeptProductCard";
+import DeptEmpty from "../../components/dept/DeptEmpty";
 import useReveal from "../../components/dept/useReveal";
 import { useLang } from "../../i18n/LanguageContext";
 import {
@@ -74,19 +75,25 @@ export default function MenHome() {
                 {pick("أحدث القطع", "Latest arrivals")}
               </h2>
             </div>
-            <Link to="/men/tshirts" className="dept-link">
-              {pick("عرض الكل", "View all")}
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-            </Link>
+            {newIn.length > 0 && (
+              <Link to="/men/tshirts" className="dept-link">
+                {pick("عرض الكل", "View all")}
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+              </Link>
+            )}
           </header>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
-            {newIn.map((p) => (
-              <div key={p.id} className="dept-reveal">
-                <DeptProductCard product={p} />
-              </div>
-            ))}
-          </div>
+          {newIn.length === 0 ? (
+            <DeptEmpty />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+              {newIn.map((p) => (
+                <div key={p.id} className="dept-reveal">
+                  <DeptProductCard product={p} />
+                </div>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </DeptShell>

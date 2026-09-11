@@ -27,12 +27,15 @@ const cards: Card[] = [
   { slug: "snoopy-pajama", x: 48, y: 66, w: 25, rotate: -6, depth: 1.4, delay: 0.48, bob: 6.1, z: 12 },
 ];
 
+/** tape colours alternate between the two brand colours */
+const tapes = ["var(--color-sky-300)", "var(--color-pink-300)"];
+
 export default function PhotoCollage() {
   const { pick } = useLang();
 
   return (
     <div className="relative w-full aspect-[10/8] max-w-[640px] mx-auto">
-      {cards.map((card) => {
+      {cards.map((card, i) => {
         const product =
           card.slug === "lifestyle"
             ? undefined
@@ -63,14 +66,17 @@ export default function PhotoCollage() {
                 to={href}
                 aria-label={label}
                 className="anim-deal polaroid relative block"
-                style={{
-                  transform: `rotate(${card.rotate}deg)`,
-                  animationDelay: `${card.delay}s`,
-                }}
+                style={
+                  {
+                    transform: `rotate(${card.rotate}deg)`,
+                    animationDelay: `${card.delay}s`,
+                    "--tape": tapes[i % 2],
+                  } as React.CSSProperties
+                }
               >
-                <div className="overflow-hidden rounded-md bg-pink-50 aspect-[4/5]">
+                <div className="overflow-hidden rounded-md bg-sky-50 aspect-[4/5]">
                   <img
-                    src={product ? product.image : "/images/promo-kids.png"}
+                    src={product ? product.image : "/images/promo-home.webp"}
                     alt=""
                     aria-hidden="true"
                     loading="eager"

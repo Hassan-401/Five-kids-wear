@@ -4,7 +4,7 @@ import FeatureStrip from "../components/FeatureStrip";
 import { SectionTitle } from "../components/CategoryGrid";
 import { useLang } from "../i18n/LanguageContext";
 import { BadgeIcon, ShieldIcon, SupportIcon } from "../components/Icons";
-import { Heart, Rainbow } from "../components/Decor";
+import { Moon, Star } from "../components/Decor";
 
 export default function About() {
   const { t } = useLang();
@@ -33,17 +33,17 @@ export default function About() {
       <section className="container-x py-12">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
           <div className="relative">
-            <Rainbow className="absolute -top-6 -start-4 w-24 opacity-70" />
+            <Moon className="absolute -top-2 start-6 w-14 h-14 anim-float-slow" />
             <img
-              src="/images/logo.png"
+              src="/images/logo.webp"
               alt=""
               aria-hidden="true"
-              className="w-full max-w-sm mx-auto drop-shadow-[0_20px_25px_rgba(180,120,150,.25)]"
+              className="w-full max-w-sm mx-auto drop-shadow-[0_20px_25px_rgba(34,53,140,.22)]"
             />
           </div>
 
           <div className="relative">
-            <Heart className="absolute -top-4 end-2 w-6 h-6 anim-float" color="#ffb3d2" />
+            <Star className="absolute -top-4 end-2 w-6 h-6 anim-float" color="#ffb3d2" />
             <h2 className="text-2xl sm:text-3xl font-extrabold text-pink-600 mb-4">
               {t("about.story.title")}
             </h2>

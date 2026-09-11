@@ -58,7 +58,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50">
       {/* top utility bar */}
-      <div className="bg-gradient-to-l from-pink-100 via-pink-50 to-sky-100 border-b border-pink-100">
+      <div className="bg-gradient-to-l from-sky-200 via-sky-100 to-pink-100 border-b border-sky-200">
         <div className="container-x flex items-center gap-3 py-2">
           <form onSubmit={submitSearch} className="order-2 flex-1 max-w-md mx-auto relative">
             <input
@@ -197,10 +197,10 @@ export default function Header() {
             aria-label={t("brand.name")}
           >
             <img
-              src="/images/logo.png"
+              src="/images/logo.webp"
               alt=""
               aria-hidden="true"
-              className="h-20 sm:h-24 w-auto drop-shadow-sm -mb-7 -mt-1"
+              className="h-16 sm:h-[4.75rem] w-auto drop-shadow-sm -mb-4 -mt-1"
             />
             {/* the `lg` band is tight on width, so the name shrinks there */}
             <Wordmark className="lg:hidden xl:block" />
@@ -220,7 +220,7 @@ export default function Header() {
           <div className="absolute inset-y-0 end-0 w-[82%] max-w-xs bg-white shadow-2xl p-5 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <Link to="/" dir="ltr" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
-                <img src="/images/logo.png" alt="" aria-hidden="true" className="h-14 w-auto" />
+                <img src="/images/logo.webp" alt="" aria-hidden="true" className="h-14 w-auto" />
                 <Wordmark size="sm" />
               </Link>
               <button

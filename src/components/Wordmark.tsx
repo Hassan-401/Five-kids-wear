@@ -1,58 +1,36 @@
-import { useLang } from "../i18n/LanguageContext";
-
 /**
- * The brand name set as type, so it reads at any size next to the logo mark.
- * Always laid out left-to-right — it is a Latin name even in the Arabic build.
+ * The brand name set as type in the cartoon's lettering — chunky capitals,
+ * a navy outline and a dropped navy shadow, like the logo. Always laid out
+ * left-to-right: it is a Latin name even in the Arabic build.
  */
 export default function Wordmark({
   size = "md",
-  tagline = false,
   className = "",
 }: {
   size?: "sm" | "md" | "lg";
-  /** Print the bilingual tagline under the name. */
-  tagline?: boolean;
   className?: string;
 }) {
-  const { t } = useLang();
-
   const scale = {
-    sm: {
-      the: "text-[0.5rem] tracking-[0.32em]",
-      name: "text-base",
-      tag: "text-[0.55rem]",
-    },
-    md: {
-      the: "text-[0.55rem] tracking-[0.34em]",
-      name: "text-xl sm:text-[1.35rem]",
-      tag: "text-[0.6rem]",
-    },
+    sm: { five: "text-[0.8rem]", name: "text-lg", outline: "1.5px", depth: "2px" },
+    md: { five: "text-base", name: "text-[1.6rem]", outline: "2px", depth: "2.5px" },
     lg: {
-      the: "text-[0.7rem] tracking-[0.4em]",
-      name: "text-3xl sm:text-4xl",
-      tag: "text-xs sm:text-sm",
+      five: "text-4xl sm:text-5xl",
+      name: "text-5xl sm:text-6xl xl:text-7xl",
+      outline: "3px",
+      depth: "5px",
     },
   }[size];
 
   return (
-    <span dir="ltr" className={`block text-start leading-none ${className}`}>
-      <span
-        className={`block font-extrabold uppercase text-sky-500 ${scale.the}`}
-      >
-        The
+    <span
+      dir="ltr"
+      className={`toon-word block text-start ${className}`}
+      style={{ "--o": scale.outline, "--d": scale.depth } as React.CSSProperties}
+    >
+      <span className={`block text-pink-500 ${scale.five}`}>Five</span>
+      <span className={`block whitespace-nowrap text-sky-400 ${scale.name}`}>
+        PJ Masks
       </span>
-      <span
-        className={`block font-extrabold text-pink-600 whitespace-nowrap ${scale.name}`}
-      >
-        Five Kids <span className="text-sky-500">Wear</span>
-      </span>
-      {tagline && (
-        <span
-          className={`block mt-1.5 font-bold text-navy-600/70 ${scale.tag}`}
-        >
-          {t("brand.tagline")}
-        </span>
-      )}
     </span>
   );
 }

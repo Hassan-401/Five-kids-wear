@@ -1,18 +1,26 @@
 /**
- * Decorative background pieces used across the site: floating hearts,
- * the cloud strip that separates sections, a rainbow and a smiley cloud.
- * All purely presentational — hidden from assistive tech.
+ * Decorative pieces used across the site — the night-sky motifs of the
+ * PJ Masks theme (stars, twinkles, crescent moons, lightning bolts) and the
+ * wavy cloud strip that separates sections. All purely presentational —
+ * hidden from assistive tech.
  */
 
-export function Heart({
-  className = "",
-  color = "#ffb3d2",
-  style,
-}: {
+type DecorProps = {
   className?: string;
   color?: string;
   style?: React.CSSProperties;
-}) {
+};
+
+export function Heart({ className = "", color = "#ffb3d2", style }: DecorProps) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} style={style} fill={color}>
+      <path d="M12 21.3 3.9 12.8a5 5 0 0 1 7.1-7l1 1 1-1a5 5 0 1 1 7.1 7Z" />
+    </svg>
+  );
+}
+
+/** Five-point star with softened corners. */
+export function Star({ className = "", color = "#ffd35c", style }: DecorProps) {
   return (
     <svg
       aria-hidden="true"
@@ -20,65 +28,45 @@ export function Heart({
       className={className}
       style={style}
       fill={color}
+      stroke={color}
+      strokeWidth={1.6}
+      strokeLinejoin="round"
     >
-      <path d="M12 21.3 3.9 12.8a5 5 0 0 1 7.1-7l1 1 1-1a5 5 0 1 1 7.1 7Z" />
+      <path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9Z" />
     </svg>
   );
 }
 
-export function Sparkle({
-  className = "",
-  color = "#ffd97a",
-}: {
-  className?: string;
-  color?: string;
-}) {
+/** Four-point twinkle. */
+export function Sparkle({ className = "", color = "#ffd35c", style }: DecorProps) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill={color}>
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} style={style} fill={color}>
       <path d="M12 2.5c.6 4.6 2.4 6.4 7 7-4.6.6-6.4 2.4-7 7-.6-4.6-2.4-6.4-7-7 4.6-.6 6.4-2.4 7-7Z" />
     </svg>
   );
 }
 
-export function Crown({ className = "", color = "#f5c451" }: { className?: string; color?: string }) {
+export function Moon({ className = "", color = "#ffe28a", style }: DecorProps) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="none" stroke={color} strokeWidth={1.8} strokeLinejoin="round" strokeLinecap="round">
-      <path d="M4 17.5 3 7l5 3.5L12 4l4 6.5L21 7l-1 10.5Z" />
+    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} style={style} fill={color}>
+      <path d="M20.6 14.7A8.7 8.7 0 0 1 9.3 3.4a8.7 8.7 0 1 0 11.3 11.3Z" />
     </svg>
   );
 }
 
-export function PaperPlane({ className = "", color = "#74b8f5" }: { className?: string; color?: string }) {
+export function Bolt({ className = "", color = "#4cc3f1", style }: DecorProps) {
   return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className={className} fill="none" stroke={color} strokeWidth={1.6} strokeLinejoin="round" strokeLinecap="round">
-      <path d="M21 3 10.5 14M21 3l-7 18-3.5-7L3.5 10.5Z" />
-    </svg>
-  );
-}
-
-export function Rainbow({ className = "" }: { className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 120 70" className={className} fill="none" strokeWidth={9} strokeLinecap="round">
-      <path d="M12 62a48 48 0 0 1 96 0" stroke="#ffb3d2" />
-      <path d="M25 62a35 35 0 0 1 70 0" stroke="#ffd97a" />
-      <path d="M38 62a22 22 0 0 1 44 0" stroke="#a9d3fa" />
-      <path d="M51 62a9 9 0 0 1 18 0" stroke="#c3aef0" />
-    </svg>
-  );
-}
-
-export function SmileyCloud({ className = "" }: { className?: string }) {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 120 80" className={className}>
-      <path
-        d="M28 62c-11 0-19-8-19-17s8-17 19-17c2-11 12-19 24-19s22 8 24 19c10 1 17 8 17 17s-8 17-19 17Z"
-        fill="#fff"
-      />
-      <circle cx="45" cy="46" r="3.2" fill="#5b4a5e" />
-      <circle cx="67" cy="46" r="3.2" fill="#5b4a5e" />
-      <circle cx="36" cy="53" r="5" fill="#ffc4da" opacity=".85" />
-      <circle cx="76" cy="53" r="5" fill="#ffc4da" opacity=".85" />
-      <path d="M51 54a7 7 0 0 0 10 0" stroke="#5b4a5e" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      className={className}
+      style={style}
+      fill={color}
+      stroke={color}
+      strokeWidth={1.4}
+      strokeLinejoin="round"
+    >
+      <path d="M13.6 2.5 5.2 13.4h5.9l-1.3 8.1 9-12.1h-6.1Z" />
     </svg>
   );
 }
@@ -109,30 +97,30 @@ export function CloudDivider({
   );
 }
 
-/** A field of softly floating hearts, absolutely positioned inside its parent. */
-export function FloatingHearts() {
+/** A field of softly twinkling stars and bolts, absolutely positioned inside its parent. */
+export function FloatingStars() {
   const items = [
-    { top: "8%", left: "6%", size: 22, color: "#ffb3d2", delay: "0s" },
-    { top: "18%", left: "88%", size: 26, color: "#ff8ac0", delay: "1.1s" },
-    { top: "62%", left: "4%", size: 18, color: "#ffffff", delay: "2.2s" },
-    { top: "74%", left: "80%", size: 20, color: "#ffd0e3", delay: "0.6s" },
-    { top: "38%", left: "48%", size: 14, color: "#ff8ac0", delay: "1.7s" },
-    { top: "12%", left: "40%", size: 16, color: "#a9d3fa", delay: "2.6s" },
+    { top: "10%", left: "6%", size: 22, color: "#ffd35c", Shape: Star, delay: "0s" },
+    { top: "18%", left: "88%", size: 26, color: "#ffffff", Shape: Sparkle, delay: "1.1s" },
+    { top: "62%", left: "4%", size: 18, color: "#ff8ac0", Shape: Star, delay: "2.2s" },
+    { top: "70%", left: "82%", size: 22, color: "#4cc3f1", Shape: Bolt, delay: "0.6s" },
+    { top: "36%", left: "48%", size: 14, color: "#ffd35c", Shape: Sparkle, delay: "1.7s" },
+    { top: "12%", left: "38%", size: 16, color: "#88d8f8", Shape: Star, delay: "2.6s" },
   ];
 
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-      {items.map((h, i) => (
-        <Heart
+      {items.map(({ Shape, ...s }, i) => (
+        <Shape
           key={i}
-          color={h.color}
+          color={s.color}
           className="absolute anim-float-slow"
           style={{
-            top: h.top,
-            left: h.left,
-            width: h.size,
-            height: h.size,
-            animationDelay: h.delay,
+            top: s.top,
+            left: s.left,
+            width: s.size,
+            height: s.size,
+            animationDelay: s.delay,
           }}
         />
       ))}

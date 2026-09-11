@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import DeptShell from "../../components/dept/DeptShell";
 import DeptProductCard from "../../components/dept/DeptProductCard";
+import DeptEmpty from "../../components/dept/DeptEmpty";
 import useReveal from "../../components/dept/useReveal";
 import NotFound from "../NotFound";
 import { useLang } from "../../i18n/LanguageContext";
@@ -107,6 +108,12 @@ export default function DeptListing({ dept }: { dept: Dept }) {
           </div>
         </section>
 
+        {inSub.length === 0 ? (
+          <section className="dept-wrap py-10 lg:py-14">
+            <DeptEmpty />
+          </section>
+        ) : (
+        <>
         {/* --------------------------------------------------------- tools */}
         <div className="dept-wrap pt-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -222,6 +229,8 @@ export default function DeptListing({ dept }: { dept: Dept }) {
             </div>
           )}
         </section>
+        </>
+        )}
 
         {/* --------------------------------------------- other departments */}
         <section
