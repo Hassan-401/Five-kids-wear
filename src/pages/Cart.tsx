@@ -2,21 +2,23 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { useLang } from "../i18n/LanguageContext";
+import { useCatalog } from "../context/CatalogContext";
 import { useStore } from "../context/StoreContext";
 import { colorLabel } from "../data/catalog";
 import { productHref } from "../data/departments";
 import { TrashIcon } from "../components/Icons";
 
-const SHIPPING = 60;
-const FREE_SHIPPING_OVER = 1000;
-
 export default function Cart() {
   const { t, pick, price } = useLang();
   const { cart, subtotal, updateQty, removeLine, lineProduct } = useStore();
+  const { shipping } = useCatalog();
   const [coupon, setCoupon] = useState("");
 
-  const shipping = subtotal >= FREE_SHIPPING_OVER || subtotal === 0 ? 0 : SHIPPING;
-  const total = subtotal + shipping;
+  // the exact rate depends on the governorate, which is asked for at checkout —
+  // here we can only say whether the order already qualifies for free shipping
+  const freeOver = shipping.freeOver;
+  const qualifiesFree = freeOver > 0 && subtotal >= freeOver;
+  const missingForFree = Math.max(0, freeOver - subtotal);
 
   return (
     <>
@@ -124,20 +126,32 @@ export default function Cart() {
                 <Row label={t("common.subtotal")} value={price(subtotal)} />
                 <Row
                   label={t("common.shipping")}
-                  value={shipping === 0 ? t("common.free") : price(shipping)}
+                  value={
+                    qualifiesFree
+                      ? t("common.free")
+                      : pick("يُحسب حسب المحافظة", "Based on your governorate")
+                  }
                 />
                 <div className="pt-3 border-t border-pink-100 flex items-center justify-between text-lg">
                   <dt>{t("common.total")}</dt>
-                  <dd className="text-pink-600 font-extrabold">{price(total)}</dd>
+                  <dd className="text-pink-600 font-extrabold">{price(subtotal)}</dd>
                 </div>
               </dl>
+
+              {!qualifiesFree && missingForFree > 0 && (
+                <p className="mt-4 rounded-2xl bg-sky-50 px-4 py-3 text-sm font-bold text-sky-700 text-center">
+                  {pick("ناقصك ", "You are ")}
+                  <bdi>{price(missingForFree)}</bdi>
+                  {pick(" على الشحن المجاني", " away from free shipping")}
+                </p>
+              )}
 
               <Link to="/checkout" className="btn-primary w-full mt-6">
                 {t("cart.checkout")}
               </Link>
 
               <p className="text-xs text-navy-600/50 font-semibold text-center mt-4">
-                {t("common.demoNote")}
+                {t("common.orderNote")}
               </p>
             </aside>
           </div>

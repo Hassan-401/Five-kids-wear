@@ -96,7 +96,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 pt-5 border-t border-sky-200 text-center text-sm text-navy-600/70 font-semibold">
-          {t("footer.rights")} <span dir="ltr">© {year} Five PJ Masks.</span>
+          {t("footer.rights")} <span dir="ltr">© {year} Five Kids Wear.</span>
         </div>
       </div>
     </footer>

@@ -6,12 +6,13 @@ import ProductsMarquee from "../components/ProductsMarquee";
 import ProductCard from "../components/ProductCard";
 import FeatureStrip from "../components/FeatureStrip";
 import Newsletter from "../components/Newsletter";
-import { products } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../i18n/LanguageContext";
 import { ArrowRight } from "../components/Icons";
 
 export default function Home() {
   const { t } = useLang();
+  const { products } = useCatalog();
 
   const latest = [...products]
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))

@@ -4,6 +4,10 @@ tsconfig.tsbuildinfo
 .DS_Store
 *.local
 
+# Cloudflare: local D1/R2 state and the local secrets file
+.wrangler
+.dev.vars
+
 # Original artwork kept locally only — the app serves the working copies
 # under public/images/, so these root-level source files are not committed.
 /*.png

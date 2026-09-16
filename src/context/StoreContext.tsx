@@ -7,12 +7,16 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { products, type Purchasable } from "../data/catalog";
+import type { Purchasable } from "../data/catalog";
 import { deptProducts } from "../data/departments";
+import { useCatalog } from "./CatalogContext";
 
-/** Kids + men's + women's catalogues in one list, so a cart line can point at
- *  any of them. Each section still filters its own catalogue for browsing. */
-const everything: Purchasable[] = [...products, ...deptProducts];
+/**
+ * The shopper's own state: cart and wishlist, kept in `localStorage`.
+ *
+ * There are no customer accounts on this site — an order is placed with a name,
+ * a phone number and an address, and is followed afterwards from `/track`.
+ */
 
 export type CartLine = {
   key: string;
@@ -21,16 +25,6 @@ export type CartLine = {
   color: string;
   qty: number;
 };
-
-export type Order = {
-  id: string;
-  date: string;
-  total: number;
-  status: "processing" | "shipped" | "delivered";
-  items: { name: string; qty: number; price: number; image: string }[];
-};
-
-export type DemoUser = { name: string; email: string };
 
 type StoreValue = {
   cart: CartLine[];
@@ -45,13 +39,6 @@ type StoreValue = {
   wishlist: string[];
   toggleWishlist: (productId: string) => void;
   isWishlisted: (productId: string) => boolean;
-
-  orders: Order[];
-  placeOrder: (total: number) => Order;
-
-  user: DemoUser | null;
-  signIn: (user: DemoUser) => void;
-  signOut: () => void;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
@@ -71,65 +58,27 @@ function usePersisted<T>(key: string, initial: T) {
     try {
       window.localStorage.setItem(key, JSON.stringify(state));
     } catch {
-      /* storage unavailable — demo keeps working in memory */
+      /* storage unavailable — the cart still works for this visit */
     }
   }, [key, state]);
 
   return [state, setState] as const;
 }
 
-const demoOrders: Order[] = [
-  {
-    id: "FKW-10248",
-    date: "2026-08-24",
-    total: 1105,
-    status: "delivered",
-    items: [
-      {
-        name: "Teddy & Bows Pajama",
-        qty: 2,
-        price: 370,
-        image: "/images/products/teddy-bows-pajama-1.jpg",
-      },
-      {
-        name: "Lion King Pajama",
-        qty: 1,
-        price: 365,
-        image: "/images/products/lion-king-pajama-1.jpg",
-      },
-    ],
-  },
-  {
-    id: "FKW-10312",
-    date: "2026-09-01",
-    total: 675,
-    status: "shipped",
-    items: [
-      {
-        name: "Snoopy Pajama",
-        qty: 1,
-        price: 360,
-        image: "/images/products/snoopy-pajama-1.jpg",
-      },
-      {
-        name: "Panda Girl Bodysuit Pack",
-        qty: 1,
-        price: 315,
-        image: "/images/products/girl-bodysuit-pack-panda-1.jpg",
-      },
-    ],
-  },
-];
-
 export function StoreProvider({ children }: { children: ReactNode }) {
+  const { products } = useCatalog();
   const [cart, setCart] = usePersisted<CartLine[]>("fkw.cart", []);
   const [wishlist, setWishlist] = usePersisted<string[]>("fkw.wishlist", []);
-  const [orders, setOrders] = usePersisted<Order[]>("fkw.orders", demoOrders);
-  const [user, setUser] = usePersisted<DemoUser | null>("fkw.user", null);
+
+  /** Kids + men's + women's in one list, so a cart line can point at any of them. */
+  const everything = useMemo<Purchasable[]>(
+    () => [...products, ...deptProducts],
+    [products],
+  );
 
   const lineProduct = useCallback(
     (line: CartLine) => everything.find((p) => p.id === line.productId),
-    [],
+    [everything],
   );
 
   const addToCart = useCallback(
@@ -175,31 +124,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     [setWishlist],
   );
 
-  const placeOrder = useCallback(
-    (total: number) => {
-      const order: Order = {
-        id: `FKW-${Math.floor(10000 + Math.random() * 89999)}`,
-        date: new Date().toISOString().slice(0, 10),
-        total,
-        status: "processing",
-        items: cart.map((line) => {
-          const p = lineProduct(line);
-          return {
-            name: p?.nameEn ?? "Product",
-            qty: line.qty,
-            price: p?.price ?? 0,
-            image: p?.image ?? "",
-          };
-        }),
-      };
-      setOrders((prev) => [order, ...prev]);
-      setCart([]);
-      return order;
-    },
-    [cart, lineProduct, setOrders, setCart],
-  );
-
   const value = useMemo<StoreValue>(() => {
+    // a line whose product has since been deleted contributes nothing and is
+    // skipped in the UI as well
     const subtotal = cart.reduce((sum, line) => {
       const p = everything.find((x) => x.id === line.productId);
       return sum + (p ? p.price * line.qty : 0);
@@ -217,25 +144,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       wishlist,
       toggleWishlist,
       isWishlisted: (id: string) => wishlist.includes(id),
-      orders,
-      placeOrder,
-      user,
-      signIn: (u: DemoUser) => setUser(u),
-      signOut: () => setUser(null),
     };
   }, [
     cart,
+    everything,
     wishlist,
-    orders,
-    user,
     addToCart,
     updateQty,
     removeLine,
     clearCart,
     lineProduct,
     toggleWishlist,
-    placeOrder,
-    setUser,
   ]);
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

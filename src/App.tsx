@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import {
   Navigate,
   Outlet,
@@ -15,8 +15,7 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Checkout from "./pages/Checkout";
-import Auth from "./pages/Auth";
-import Account from "./pages/Account";
+import Track from "./pages/Track";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Legal from "./pages/Legal";
@@ -25,8 +24,12 @@ import MenHome from "./pages/dept/MenHome";
 import WomenHome from "./pages/dept/WomenHome";
 import DeptListing from "./pages/dept/DeptListing";
 import DeptProduct from "./pages/dept/DeptProduct";
-import { categories, type CategoryId } from "./data/catalog";
+import { useCatalog } from "./context/CatalogContext";
 import { useLang } from "./i18n/LanguageContext";
+
+// The dashboard is only ever opened by the shop owner, so it is split out of
+// the storefront bundle and fetched on demand.
+const AdminApp = lazy(() => import("./admin/AdminApp"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -49,15 +52,17 @@ function Layout() {
   );
 }
 
-/** /category/:slug — resolves the slug to a known category, else 404. */
+/** /category/:slug — resolves the slug against the live categories, else 404. */
 function CategoryPage() {
   const { slug = "" } = useParams();
+  const { categories, ready } = useCatalog();
   const cat = categories.find((c) => c.slug === slug);
 
-  if (!cat) return <NotFound />;
-  if (cat.id === "offers") return <Navigate to="/offers" replace />;
+  // the catalogue may still be loading on a cold open of a deep link
+  if (!cat) return ready ? <NotFound /> : null;
+  if (cat.id === "offers" || cat.slug === "offers") return <Navigate to="/offers" replace />;
 
-  return <Shop key={cat.id} fixedCategory={cat.id as CategoryId} />;
+  return <Shop key={cat.id} fixedCategory={cat.id} />;
 }
 
 function OffersPage() {
@@ -86,15 +91,23 @@ export default function App() {
         <Route path="cart" element={<Cart />} />
         <Route path="wishlist" element={<Wishlist />} />
         <Route path="checkout" element={<Checkout />} />
-        <Route path="login" element={<Auth mode="login" />} />
-        <Route path="register" element={<Auth mode="register" />} />
-        <Route path="account" element={<Account />} />
+        <Route path="track" element={<Track />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="privacy" element={<Legal kind="privacy" />} />
         <Route path="terms" element={<Legal kind="terms" />} />
         <Route path="*" element={<NotFound />} />
       </Route>
+
+      {/* the dashboard renders outside the storefront chrome */}
+      <Route
+        path="/admin/*"
+        element={
+          <Suspense fallback={<div className="grid min-h-dvh place-items-center">…</div>}>
+            <AdminApp />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 }

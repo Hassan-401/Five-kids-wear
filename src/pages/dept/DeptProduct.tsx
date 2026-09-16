@@ -15,13 +15,7 @@ import {
   subCategory,
   type Dept,
 } from "../../data/departments";
-import {
-  CartIcon,
-  CheckIcon,
-  HeartIcon,
-  StarIcon,
-  TruckIcon,
-} from "../../components/Icons";
+import { CartIcon, CheckIcon, HeartIcon, TruckIcon } from "../../components/Icons";
 
 export default function DeptProduct({ dept }: { dept: Dept }) {
   const { slug = "" } = useParams();
@@ -189,21 +183,6 @@ export default function DeptProduct({ dept }: { dept: Dept }) {
 
           {/* ------------------------------------------------------ details */}
           <div>
-            <div className="flex items-center gap-2 mb-4" style={{ color: "var(--d-muted)" }}>
-              <span className="flex items-center gap-0.5 text-amber-500">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon
-                    key={i}
-                    className="w-3.5 h-3.5"
-                    filled={i < Math.round(product.rating)}
-                  />
-                ))}
-              </span>
-              <span className="text-xs font-semibold" dir="ltr">
-                {product.rating} · {product.reviews}
-              </span>
-            </div>
-
             <h1 className="dept-h1 text-2xl sm:text-[2.1rem]">
               {pick(product.nameAr, product.nameEn)}
             </h1>

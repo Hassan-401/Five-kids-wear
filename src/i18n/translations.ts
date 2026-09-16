@@ -5,8 +5,8 @@ type Dict = Record<string, string>;
 export const translations: Record<Lang, Dict> = {
   ar: {
     /* generic */
-    "brand.name": "Five PJ Masks",
-    "brand.tagline": "ملابس أطفال بروح الأبطال",
+    "brand.name": "Five Kids Wear",
+    "brand.tagline": "ملابس أطفال من قطن ناعم",
     "common.currency": "ج.م",
     "common.shopNow": "تسوق الآن",
     "common.viewAll": "عرض الكل",
@@ -14,10 +14,6 @@ export const translations: Record<Lang, Dict> = {
     "common.added": "تمت الإضافة",
     "common.search": "ابحث عن ملابس أطفال...",
     "common.searchShort": "بحث",
-    "common.login": "تسجيل الدخول",
-    "common.logout": "تسجيل الخروج",
-    "common.register": "إنشاء حساب",
-    "common.account": "حسابي",
     "common.cart": "السلة",
     "common.wishlist": "المفضلة",
     "common.remove": "حذف",
@@ -46,8 +42,9 @@ export const translations: Record<Lang, Dict> = {
     "common.emptyTitle": "لا يوجد شيء هنا بعد",
     "common.save": "حفظ",
     "common.send": "إرسال",
-    "common.demoNote":
-      "هذه نسخة تجريبية للعرض فقط — لا يوجد ربط بقاعدة بيانات أو دفع حقيقي.",
+    "common.retry": "حاول مرة أخرى",
+    "common.orderNote":
+      "هنكلمك على رقم تليفونك لتأكيد الطلب قبل الشحن. الدفع عند الاستلام متاح لكل المحافظات.",
 
     /* nav */
     "nav.home": "الرئيسية",
@@ -61,6 +58,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.shop": "كل المنتجات",
     "nav.about": "من نحن",
     "nav.contact": "تواصل معنا",
+    "nav.track": "تتبع طلبك",
 
     /* hero */
     "hero.subtitle": "أبطال بالليل .. ومرتاحين طول اليوم",
@@ -165,32 +163,33 @@ export const translations: Record<Lang, Dict> = {
     "checkout.success": "تم استلام طلبك بنجاح!",
     "checkout.successSub": "سنتواصل معك قريباً لتأكيد التفاصيل",
     "checkout.orderNumber": "رقم الطلب",
+    "checkout.saveNumber": "احتفظ برقم الطلب — هتحتاجه عشان تتابع طلبك",
+    "checkout.trackOrder": "تتبع الطلب",
+    "checkout.failed": "حصلت مشكلة أثناء إرسال الطلب. حاول تاني.",
+    "checkout.sending": "جاري إرسال الطلب...",
+    "checkout.closed": "الطلبات متوقفة مؤقتاً، تابعنا وهنفتح تاني قريب.",
+    "checkout.pickCity": "اختر المحافظة عشان نحسب الشحن",
 
-    /* auth */
-    "auth.loginTitle": "أهلاً بعودتك",
-    "auth.loginSub": "سجّل الدخول لمتابعة التسوق",
-    "auth.registerTitle": "أنشئ حسابك",
-    "auth.registerSub": "انضم لعائلة Five PJ Masks",
-    "auth.password": "كلمة المرور",
-    "auth.confirmPassword": "تأكيد كلمة المرور",
-    "auth.forgot": "نسيت كلمة المرور؟",
-    "auth.noAccount": "ليس لديك حساب؟",
-    "auth.hasAccount": "لديك حساب بالفعل؟",
+    /* order tracking — there are no customer accounts, only the reference */
+    "track.title": "تتبع طلبك",
+    "track.sub": "اكتب رقم الطلب ورقم التليفون اللي طلبت بيه",
+    "track.orderId": "رقم الطلب",
+    "track.phone": "رقم التليفون",
+    "track.cta": "اعرض الطلب",
+    "track.notFound": "مفيش طلب بالبيانات دي — راجع رقم الطلب ورقم التليفون",
+    "track.placedOn": "تاريخ الطلب",
+    "track.items": "المنتجات",
 
-    /* account */
-    "account.title": "حسابي",
-    "account.profile": "بياناتي",
-    "account.orders": "طلباتي",
-    "account.addresses": "عناويني",
-    "account.noOrders": "لا توجد طلبات حتى الآن",
-    "account.orderStatus.processing": "قيد التجهيز",
-    "account.orderStatus.shipped": "تم الشحن",
-    "account.orderStatus.delivered": "تم التسليم",
+    "status.pending": "قيد المراجعة",
+    "status.confirmed": "تم التأكيد",
+    "status.shipped": "تم الشحن",
+    "status.delivered": "تم التسليم",
+    "status.cancelled": "ملغي",
 
     /* about */
     "about.title": "من نحن",
     "about.lead":
-      "Five PJ Masks علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
+      "Five Kids Wear علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
     "about.story.title": "قصتنا",
     "about.story.body":
       "بدأت الفكرة من خمسة أطفال .. ومن رغبة بسيطة في أن يجد كل أب وأم ملابس مريحة وجميلة وبسعر مناسب. اليوم صرنا عائلة كبيرة تضم آلاف الأمهات في كل محافظات مصر.",
@@ -236,8 +235,8 @@ export const translations: Record<Lang, Dict> = {
   },
 
   en: {
-    "brand.name": "Five PJ Masks",
-    "brand.tagline": "Kids clothes with a superhero spirit",
+    "brand.name": "Five Kids Wear",
+    "brand.tagline": "Soft cotton clothes for happy kids",
     "common.currency": "EGP",
     "common.shopNow": "Shop Now",
     "common.viewAll": "View all",
@@ -245,10 +244,6 @@ export const translations: Record<Lang, Dict> = {
     "common.added": "Added",
     "common.search": "Search for kids clothes...",
     "common.searchShort": "Search",
-    "common.login": "Sign in",
-    "common.logout": "Sign out",
-    "common.register": "Create account",
-    "common.account": "My account",
     "common.cart": "Cart",
     "common.wishlist": "Wishlist",
     "common.remove": "Remove",
@@ -277,8 +272,9 @@ export const translations: Record<Lang, Dict> = {
     "common.emptyTitle": "Nothing here yet",
     "common.save": "Save",
     "common.send": "Send",
-    "common.demoNote":
-      "This is a front-end demo — no database or real payment is connected.",
+    "common.retry": "Try again",
+    "common.orderNote":
+      "We will call you to confirm the order before it ships. Cash on delivery is available everywhere in Egypt.",
 
     "nav.home": "Home",
     "nav.boys": "Boys",
@@ -291,6 +287,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.shop": "All products",
     "nav.about": "About us",
     "nav.contact": "Contact us",
+    "nav.track": "Track your order",
 
     "hero.subtitle": "Heroes by night .. comfy all day long",
 
@@ -383,29 +380,31 @@ export const translations: Record<Lang, Dict> = {
     "checkout.success": "Your order has been received!",
     "checkout.successSub": "We will contact you shortly to confirm the details",
     "checkout.orderNumber": "Order number",
+    "checkout.saveNumber": "Keep this number — you will need it to track your order",
+    "checkout.trackOrder": "Track order",
+    "checkout.failed": "Something went wrong sending the order. Please try again.",
+    "checkout.sending": "Sending your order...",
+    "checkout.closed": "Orders are paused for now — follow us, we will be back soon.",
+    "checkout.pickCity": "Pick a governorate so we can work out shipping",
 
-    "auth.loginTitle": "Welcome back",
-    "auth.loginSub": "Sign in to continue shopping",
-    "auth.registerTitle": "Create your account",
-    "auth.registerSub": "Join Five PJ Masks family",
-    "auth.password": "Password",
-    "auth.confirmPassword": "Confirm password",
-    "auth.forgot": "Forgot password?",
-    "auth.noAccount": "Don't have an account?",
-    "auth.hasAccount": "Already have an account?",
+    "track.title": "Track your order",
+    "track.sub": "Enter your order number and the phone number you ordered with",
+    "track.orderId": "Order number",
+    "track.phone": "Phone number",
+    "track.cta": "Show my order",
+    "track.notFound": "No order matches those details — check the number and the phone",
+    "track.placedOn": "Placed on",
+    "track.items": "Items",
 
-    "account.title": "My account",
-    "account.profile": "Profile",
-    "account.orders": "My orders",
-    "account.addresses": "My addresses",
-    "account.noOrders": "No orders yet",
-    "account.orderStatus.processing": "Processing",
-    "account.orderStatus.shipped": "Shipped",
-    "account.orderStatus.delivered": "Delivered",
+    "status.pending": "Under review",
+    "status.confirmed": "Confirmed",
+    "status.shipped": "Shipped",
+    "status.delivered": "Delivered",
+    "status.cancelled": "Cancelled",
 
     "about.title": "About us",
     "about.lead":
-      "Five PJ Masks is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
+      "Five Kids Wear is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
     "about.story.title": "Our story",
     "about.story.body":
       "It started with five kids .. and a simple wish: that every parent could find comfortable, beautiful clothes at a fair price. Today we are a big family of thousands of mums across Egypt.",

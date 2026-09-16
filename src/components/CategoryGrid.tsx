@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
-import { categories } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 import { ArrowRight } from "./Icons";
 import { Bolt, Sparkle, Star } from "./Decor";
 
 export default function CategoryGrid() {
   const { t, pick } = useLang();
+  const { categories } = useCatalog();
 
   return (
     <section className="relative container-x py-12 sm:py-16">
@@ -18,7 +19,7 @@ export default function CategoryGrid() {
         {categories.map((cat) => (
           <Link
             key={cat.id}
-            to={cat.id === "offers" ? "/offers" : `/category/${cat.slug}`}
+            to={cat.slug === "offers" ? "/offers" : `/category/${cat.slug}`}
             className={[
               "group relative flex flex-col items-center rounded-[2rem] p-4 pt-6 text-center overflow-hidden",
               "bg-gradient-to-b shadow-card border-2 border-white transition hover:-translate-y-1.5 hover:shadow-soft",

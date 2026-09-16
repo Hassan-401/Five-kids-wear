@@ -1,35 +1,86 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import { EmptyState } from "./Cart";
-import { colorLabel, governorates } from "../data/catalog";
+import { colorLabel } from "../data/catalog";
 import { useLang } from "../i18n/LanguageContext";
+import { useCatalog } from "../context/CatalogContext";
 import { useStore } from "../context/StoreContext";
-import { CheckIcon, ShieldIcon, TruckIcon } from "../components/Icons";
+import { ApiError, api } from "../lib/api";
+import { CheckIcon, TruckIcon } from "../components/Icons";
 import { Star } from "../components/Decor";
 
-const SHIPPING = 60;
-const FREE_SHIPPING_OVER = 1000;
-
-type Payment = "cod" | "card" | "wallet";
-
+/**
+ * Checkout.
+ *
+ * The browser sends product ids and quantities; the Worker prices the order
+ * from the database and returns the reference. Nothing here is trusted server
+ * side, so the totals on screen are a preview of the same calculation.
+ */
 export default function Checkout() {
   const { t, pick, price } = useLang();
-  const { cart, subtotal, lineProduct, placeOrder, user } = useStore();
-  const navigate = useNavigate();
+  const { cart, subtotal, lineProduct, clearCart } = useStore();
+  const { shipping, settings, shippingFor } = useCatalog();
 
-  const [payment, setPayment] = useState<Payment>("cod");
+  const [form, setForm] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    governorate: "",
+    address: "",
+    notes: "",
+  });
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [placed, setPlaced] = useState<string | null>(null);
 
-  const shipping = subtotal >= FREE_SHIPPING_OVER || subtotal === 0 ? 0 : SHIPPING;
-  const total = subtotal + shipping;
+  const set = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
+    setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
-  const submit = (e: React.FormEvent) => {
+  const shippingCost = form.governorate ? shippingFor(form.governorate, subtotal) : null;
+  const total = subtotal + (shippingCost ?? 0);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const order = placeOrder(total);
-    setPlaced(order.id);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (sending) return;
+    setSending(true);
+    setError(null);
+
+    try {
+      const order = await api.createOrder({
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        governorate: form.governorate,
+        address: form.address,
+        notes: form.notes,
+        payment: "cod",
+        items: cart.map((line) => ({
+          productId: line.productId,
+          size: line.size,
+          color: line.color,
+          qty: line.qty,
+        })),
+      });
+
+      setPlaced(order.id);
+      clearCart();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      const code = err instanceof ApiError ? err.code : "network";
+      setError(
+        code === "orders_closed"
+          ? t("checkout.closed")
+          : code === "invalid_phone"
+            ? pick("رقم التليفون غير صحيح", "That phone number does not look right")
+            : t("checkout.failed"),
+      );
+    } finally {
+      setSending(false);
+    }
   };
+
+  /* ------------------------------------------------------- order placed */
 
   if (placed) {
     return (
@@ -46,21 +97,39 @@ export default function Checkout() {
             <h2 className="mt-5 text-2xl font-extrabold text-navy-600">
               {t("checkout.success")}
             </h2>
-            <p className="mt-2 font-semibold text-navy-600/65">
-              {t("checkout.successSub")}
-            </p>
+            <p className="mt-2 font-semibold text-navy-600/65">{t("checkout.successSub")}</p>
             <p className="mt-4 inline-block rounded-full bg-pink-50 px-5 py-2 font-extrabold text-pink-600">
-              {t("checkout.orderNumber")}: {placed}
+              {t("checkout.orderNumber")}: <bdi>{placed}</bdi>
+            </p>
+            <p className="mt-3 text-sm font-bold text-navy-600/60">
+              {t("checkout.saveNumber")}
             </p>
             <div className="flex flex-wrap justify-center gap-3 mt-7">
-              <Link to="/account" className="btn-primary">
-                {t("account.orders")}
+              <Link to={`/track?id=${encodeURIComponent(placed)}`} className="btn-primary">
+                {t("checkout.trackOrder")}
               </Link>
               <Link to="/shop" className="btn-ghost">
                 {t("cart.continueShopping")}
               </Link>
             </div>
           </div>
+        </div>
+      </>
+    );
+  }
+
+  /* ------------------------------------------------------- empty states */
+
+  if (!settings.ordersOpen) {
+    return (
+      <>
+        <PageHeader title={t("checkout.title")} crumbs={[{ label: t("checkout.title") }]} />
+        <div className="container-x py-10">
+          <EmptyState
+            title={t("checkout.closed")}
+            sub={t("cart.emptySub")}
+            cta={t("cart.continueShopping")}
+          />
         </div>
       </>
     );
@@ -81,6 +150,8 @@ export default function Checkout() {
     );
   }
 
+  /* -------------------------------------------------------------- form */
+
   return (
     <>
       <PageHeader title={t("checkout.title")} crumbs={[{ label: t("checkout.title") }]} />
@@ -89,86 +160,93 @@ export default function Checkout() {
         <div className="grid lg:grid-cols-[1fr_380px] gap-8 items-start">
           <div className="flex flex-col gap-6">
             {/* contact */}
-            <fieldset className="card-soft p-6">
+            <fieldset className="card-soft p-6" disabled={sending}>
               <legend className="text-lg font-extrabold text-pink-600 px-2">
                 {t("checkout.contact")}
               </legend>
               <div className="grid sm:grid-cols-2 gap-4 mt-3">
-                <Field label={t("checkout.fullName")} defaultValue={user?.name} required />
                 <Field
-                  label={t("checkout.email")}
-                  type="email"
-                  defaultValue={user?.email}
+                  label={t("checkout.fullName")}
+                  value={form.name}
+                  onChange={set("name")}
                   required
                 />
-                <Field label={t("checkout.phone")} type="tel" required />
+                <Field
+                  label={t("checkout.phone")}
+                  type="tel"
+                  inputMode="tel"
+                  value={form.phone}
+                  onChange={set("phone")}
+                  required
+                />
+                <Field
+                  label={`${t("checkout.email")} (${t("common.optional")})`}
+                  type="email"
+                  value={form.email}
+                  onChange={set("email")}
+                />
               </div>
             </fieldset>
 
             {/* shipping */}
-            <fieldset className="card-soft p-6">
+            <fieldset className="card-soft p-6" disabled={sending}>
               <legend className="text-lg font-extrabold text-pink-600 px-2">
                 {t("checkout.shipping")}
               </legend>
               <div className="grid sm:grid-cols-2 gap-4 mt-3">
                 <label className="flex flex-col gap-1.5">
-                  <span className="font-bold text-navy-600 text-sm">
-                    {t("checkout.city")}
-                  </span>
-                  <select className="field" required defaultValue="">
+                  <span className="font-bold text-navy-600 text-sm">{t("checkout.city")}</span>
+                  <select
+                    className="field"
+                    required
+                    value={form.governorate}
+                    onChange={set("governorate")}
+                  >
                     <option value="" disabled>
                       —
                     </option>
-                    {governorates.map((g) => (
+                    {shipping.rates.map((g) => (
                       <option key={g.en} value={g.en}>
-                        {pick(g.ar, g.en)}
+                        {pick(g.ar, g.en)} — {g.price} {pick("ج.م", "EGP")}
                       </option>
                     ))}
                   </select>
                 </label>
-                <Field label={t("checkout.address")} required />
+                <Field
+                  label={t("checkout.address")}
+                  value={form.address}
+                  onChange={set("address")}
+                  required
+                />
                 <label className="flex flex-col gap-1.5 sm:col-span-2">
                   <span className="font-bold text-navy-600 text-sm">
                     {t("checkout.notes")}{" "}
                     <span className="text-navy-600/50">({t("common.optional")})</span>
                   </span>
-                  <textarea rows={3} className="field" />
+                  <textarea
+                    rows={3}
+                    className="field"
+                    value={form.notes}
+                    onChange={set("notes")}
+                  />
                 </label>
               </div>
             </fieldset>
 
-            {/* payment */}
+            {/* payment — cash on delivery is the only method wired up */}
             <fieldset className="card-soft p-6">
               <legend className="text-lg font-extrabold text-pink-600 px-2">
                 {t("checkout.payment")}
               </legend>
-              <div className="grid sm:grid-cols-3 gap-3 mt-3">
-                {(
-                  [
-                    { id: "cod", label: "checkout.cod", Icon: TruckIcon },
-                    { id: "card", label: "checkout.card", Icon: ShieldIcon },
-                    { id: "wallet", label: "checkout.wallet", Icon: ShieldIcon },
-                  ] as const
-                ).map(({ id, label, Icon }) => (
-                  <button
-                    type="button"
-                    key={id}
-                    onClick={() => setPayment(id)}
-                    className={[
-                      "flex flex-col items-center gap-2 rounded-2xl border-2 px-3 py-5 font-bold transition",
-                      payment === id
-                        ? "border-pink-500 bg-pink-50 text-pink-600"
-                        : "border-pink-100 text-navy-600 hover:border-pink-300",
-                    ].join(" ")}
-                  >
-                    <Icon className="w-6 h-6" />
-                    <span className="text-sm text-center">{t(label)}</span>
-                  </button>
-                ))}
+              <div className="mt-3 flex items-center gap-3 rounded-2xl border-2 border-pink-500 bg-pink-50 px-4 py-4">
+                <TruckIcon className="w-6 h-6 text-pink-600 shrink-0" />
+                <div>
+                  <p className="font-extrabold text-pink-700">{t("checkout.cod")}</p>
+                  <p className="text-sm font-semibold text-navy-600/70">
+                    {t("common.orderNote")}
+                  </p>
+                </div>
               </div>
-              <p className="text-xs font-semibold text-navy-600/50 mt-4">
-                {t("common.demoNote")}
-              </p>
             </fieldset>
           </div>
 
@@ -218,7 +296,17 @@ export default function Checkout() {
               </div>
               <div className="flex justify-between">
                 <dt>{t("common.shipping")}</dt>
-                <dd>{shipping === 0 ? t("common.free") : price(shipping)}</dd>
+                <dd>
+                  {shippingCost === null ? (
+                    <span className="text-sm font-semibold text-navy-600/60">
+                      {t("checkout.pickCity")}
+                    </span>
+                  ) : shippingCost === 0 ? (
+                    t("common.free")
+                  ) : (
+                    price(shippingCost)
+                  )}
+                </dd>
               </div>
               <div className="flex justify-between text-lg pt-3 border-t border-pink-100">
                 <dt>{t("common.total")}</dt>
@@ -226,16 +314,21 @@ export default function Checkout() {
               </div>
             </dl>
 
-            <button type="submit" className="btn-primary w-full mt-6">
-              {t("checkout.placeOrder")}
+            {error && (
+              <p
+                role="alert"
+                className="mt-5 rounded-2xl bg-red-50 px-4 py-3 text-sm font-bold text-red-700"
+              >
+                {error}
+              </p>
+            )}
+
+            <button type="submit" className="btn-primary w-full mt-6" disabled={sending}>
+              {sending ? t("checkout.sending") : t("checkout.placeOrder")}
             </button>
-            <button
-              type="button"
-              onClick={() => navigate("/cart")}
-              className="btn-ghost w-full mt-3"
-            >
+            <Link to="/cart" className="btn-ghost w-full mt-3">
               {t("common.back")}
-            </button>
+            </Link>
           </aside>
         </div>
       </form>
@@ -247,20 +340,26 @@ function Field({
   label,
   type = "text",
   required,
-  defaultValue,
+  value,
+  onChange,
+  inputMode,
 }: {
   label: string;
   type?: string;
   required?: boolean;
-  defaultValue?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  inputMode?: "tel" | "text" | "email";
 }) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="font-bold text-navy-600 text-sm">{label}</span>
       <input
         type={type}
+        inputMode={inputMode}
         required={required}
-        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange}
         className="field"
       />
     </label>

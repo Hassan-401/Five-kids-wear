@@ -13,10 +13,11 @@ import {
   MenuIcon,
   SearchIcon,
   TiktokIcon,
-  UserIcon,
+  TruckIcon,
   YoutubeIcon,
 } from "./Icons";
 import Wordmark from "./Wordmark";
+import { useCatalog } from "../context/CatalogContext";
 
 const socials = [
   { Icon: FacebookIcon, href: "#", label: "Facebook" },
@@ -25,20 +26,22 @@ const socials = [
   { Icon: YoutubeIcon, href: "#", label: "YouTube" },
 ];
 
-const navItems = [
-  { to: "/", key: "nav.home", end: true },
-  { to: "/category/boys", key: "nav.boys" },
-  { to: "/category/girls", key: "nav.girls" },
-  { to: "/category/pajamas", key: "nav.pajamas" },
-  { to: "/category/newborn", key: "nav.newborn" },
-  { to: "/men", key: "nav.men" },
-  { to: "/women", key: "nav.women" },
-];
-
 export default function Header() {
-  const { t, toggleLang, lang } = useLang();
-  const { cartCount, wishlist, user } = useStore();
+  const { t, pick, toggleLang, lang } = useLang();
+  const { cartCount, wishlist } = useStore();
+  const { categories } = useCatalog();
   const navigate = useNavigate();
+
+  // the nav follows the live categories, so anything added in the dashboard
+  // appears here without a code change
+  const navItems = [
+    { to: "/", label: t("nav.home"), end: true },
+    ...categories
+      .filter((c) => c.slug !== "offers")
+      .map((c) => ({ to: `/category/${c.slug}`, label: pick(c.nameAr, c.nameEn), end: false })),
+    { to: "/men", label: t("nav.men"), end: false },
+    { to: "/women", label: t("nav.women"), end: false },
+  ];
   const [query, setQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -88,13 +91,11 @@ export default function Header() {
             </button>
 
             <Link
-              to={user ? "/account" : "/login"}
+              to="/track"
               className="hidden sm:flex items-center gap-1.5 text-navy-600 hover:text-pink-600 transition"
             >
-              <UserIcon className="w-5 h-5" />
-              <span className="whitespace-nowrap">
-                {user ? user.name.split(" ")[0] : t("common.login")}
-              </span>
+              <TruckIcon className="w-5 h-5" />
+              <span className="whitespace-nowrap">{t("nav.track")}</span>
             </Link>
 
             <Link
@@ -154,6 +155,7 @@ export default function Header() {
                 key={item.to}
                 to={item.to}
                 end={item.end}
+                title={item.label}
                 className={({ isActive }) =>
                   [
                     "relative px-4 py-2 rounded-full font-bold transition",
@@ -165,7 +167,7 @@ export default function Header() {
               >
                 {({ isActive }) => (
                   <>
-                    {t(item.key)}
+                    {item.label}
                     {isActive && (
                       <span className="absolute inset-x-4 -bottom-0.5 h-[3px] rounded-full bg-sky-500" />
                     )}
@@ -233,30 +235,32 @@ export default function Header() {
             </div>
 
             <nav className="flex flex-col gap-1">
-              {[...navItems, { to: "/offers", key: "nav.offers" }, { to: "/shop", key: "nav.shop" }].map(
-                (item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    onClick={() => setMenuOpen(false)}
-                    className={({ isActive }) =>
-                      [
-                        "rounded-2xl px-4 py-3 font-bold transition",
-                        isActive
-                          ? "bg-sky-100 text-sky-500"
-                          : "text-navy-600 hover:bg-pink-50",
-                      ].join(" ")
-                    }
-                  >
-                    {t(item.key)}
-                  </NavLink>
-                ),
-              )}
+              {[
+                ...navItems,
+                { to: "/offers", label: t("nav.offers") },
+                { to: "/shop", label: t("nav.shop") },
+              ].map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className={({ isActive }) =>
+                    [
+                      "rounded-2xl px-4 py-3 font-bold transition",
+                      isActive
+                        ? "bg-sky-100 text-sky-500"
+                        : "text-navy-600 hover:bg-pink-50",
+                    ].join(" ")
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
               <hr className="my-3 border-pink-100" />
               {[
                 { to: "/about", key: "nav.about" },
                 { to: "/contact", key: "nav.contact" },
-                { to: user ? "/account" : "/login", key: user ? "common.account" : "common.login" },
+                { to: "/track", key: "nav.track" },
               ].map((item) => (
                 <NavLink
                   key={item.to}

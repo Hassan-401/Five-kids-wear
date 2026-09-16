@@ -3,13 +3,14 @@ import { useSearchParams } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
 import ProductCard from "../components/ProductCard";
 import Newsletter from "../components/Newsletter";
-import { categories, products, type CategoryId } from "../data/catalog";
+import type { CategoryId } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../i18n/LanguageContext";
 import { SearchIcon } from "../components/Icons";
 
 type Sort = "newest" | "priceAsc" | "priceDesc" | "popular";
 
-const MAX_PRICE = 450;
+const MAX_PRICE = 600;
 
 export default function Shop({
   fixedCategory,
@@ -23,6 +24,7 @@ export default function Shop({
   subtitle?: string;
 }) {
   const { t, pick } = useLang();
+  const { products, categories } = useCatalog();
   const [params, setParams] = useSearchParams();
 
   const query = params.get("q") ?? "";
@@ -35,7 +37,7 @@ export default function Shop({
 
   const allSizes = useMemo(
     () => Array.from(new Set(products.flatMap((p) => p.sizes))),
-    [],
+    [products],
   );
 
   const list = useMemo(() => {
@@ -67,7 +69,7 @@ export default function Shop({
       default:
         return out.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     }
-  }, [category, fixedCategory, onlyOffers, query, sort, maxPrice, sizes]);
+  }, [products, category, fixedCategory, onlyOffers, query, sort, maxPrice, sizes]);
 
   const resetFilters = () => {
     setCategory(fixedCategory ?? "all");
@@ -117,7 +119,7 @@ export default function Shop({
                     {t("shop.allCategories")}
                   </FilterPill>
                   {categories
-                    .filter((c) => c.id !== "offers")
+                    .filter((c) => c.slug !== "offers")
                     .map((c) => (
                       <FilterPill
                         key={c.id}

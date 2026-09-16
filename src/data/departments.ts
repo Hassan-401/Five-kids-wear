@@ -37,8 +37,6 @@ export type DeptProduct = {
   image: string;
   sizes: string[];
   colors: Swatch[];
-  rating: number;
-  reviews: number;
   isNew?: boolean;
   popularity: number;
   createdAt: string;

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
 import { useStore } from "../context/StoreContext";
 import type { Product } from "../data/catalog";
-import { CartIcon, CheckIcon, HeartIcon, StarIcon } from "./Icons";
+import { CartIcon, CheckIcon, HeartIcon } from "./Icons";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { t, pick, price } = useLang();
@@ -62,20 +62,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
 
-      <div className="flex flex-col flex-1 gap-2 p-4 pt-2 text-center">
-        <div className="flex items-center justify-center gap-1 text-amber-400">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <StarIcon
-              key={i}
-              className="w-3.5 h-3.5"
-              filled={i < Math.round(product.rating)}
-            />
-          ))}
-          <span className="text-[11px] text-navy-600/60 font-bold ms-1">
-            ({product.reviews})
-          </span>
-        </div>
-
+      <div className="flex flex-col flex-1 gap-2 p-4 pt-3 text-center">
         <Link
           to={`/product/${product.slug}`}
           className="font-bold text-navy-600 hover:text-pink-600 transition leading-snug line-clamp-2"

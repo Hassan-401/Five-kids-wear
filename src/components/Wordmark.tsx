@@ -29,7 +29,7 @@ export default function Wordmark({
     >
       <span className={`block text-pink-500 ${scale.five}`}>Five</span>
       <span className={`block whitespace-nowrap text-sky-400 ${scale.name}`}>
-        PJ Masks
+        Kids Wear
       </span>
     </span>
   );

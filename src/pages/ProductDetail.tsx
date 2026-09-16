@@ -5,7 +5,7 @@ import ProductCard from "../components/ProductCard";
 import { SectionTitle } from "../components/CategoryGrid";
 import Newsletter from "../components/Newsletter";
 import NotFound from "./NotFound";
-import { categories, getProductBySlug, getRelated } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 import { useLang } from "../i18n/LanguageContext";
 import { useStore } from "../context/StoreContext";
 import {
@@ -14,13 +14,13 @@ import {
   CheckIcon,
   HeartIcon,
   ShieldIcon,
-  StarIcon,
   TruckIcon,
 } from "../components/Icons";
 
 export default function ProductDetail() {
   const { slug = "" } = useParams();
-  const product = getProductBySlug(slug);
+  const { categories, getProduct, getRelated, ready } = useCatalog();
+  const product = getProduct(slug);
   const { t, pick, price } = useLang();
   const { addToCart, toggleWishlist, isWishlisted } = useStore();
 
@@ -31,9 +31,13 @@ export default function ProductDetail() {
   const [added, setAdded] = useState(false);
   const [error, setError] = useState(false);
 
-  const related = useMemo(() => (product ? getRelated(product) : []), [product]);
+  const related = useMemo(
+    () => (product ? getRelated(product) : []),
+    [product, getRelated],
+  );
 
-  if (!product) return <NotFound />;
+  // a deep link can land here before the catalogue has arrived
+  if (!product) return ready ? <NotFound /> : null;
 
   const cat = categories.find((c) => c.id === product.category);
   const wished = isWishlisted(product.id);
@@ -119,14 +123,6 @@ export default function ProductDetail() {
           {/* details */}
           <div className="flex flex-col gap-5">
             <div>
-              <div className="flex items-center gap-2 text-amber-400 mb-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon key={i} className="w-4 h-4" filled={i < Math.round(product.rating)} />
-                ))}
-                <span className="text-sm font-bold text-navy-600/60">
-                  {product.rating} ({product.reviews})
-                </span>
-              </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-navy-600">
                 {pick(product.nameAr, product.nameEn)}
               </h1>
@@ -141,10 +137,16 @@ export default function ProductDetail() {
                   {price(product.oldPrice)}
                 </span>
               )}
-              <span className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-600 px-3 py-1 text-sm font-bold">
-                <CheckIcon className="w-4 h-4" />
-                {t("common.inStock")}
-              </span>
+              {product.inStock === false ? (
+                <span className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-navy-600/10 text-navy-600 px-3 py-1 text-sm font-bold">
+                  {t("common.outOfStock")}
+                </span>
+              ) : (
+                <span className="ms-auto inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-600 px-3 py-1 text-sm font-bold">
+                  <CheckIcon className="w-4 h-4" />
+                  {t("common.inStock")}
+                </span>
+              )}
             </div>
 
             <p className="font-semibold leading-relaxed text-navy-600/80">

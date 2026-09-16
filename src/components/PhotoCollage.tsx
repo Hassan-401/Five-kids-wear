@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
-import { products } from "../data/catalog";
+import { useCatalog } from "../context/CatalogContext";
 
 type Card = {
   /** product slug, or "lifestyle" for the campaign photo in the middle */
@@ -32,6 +32,7 @@ const tapes = ["var(--color-sky-300)", "var(--color-pink-300)"];
 
 export default function PhotoCollage() {
   const { pick } = useLang();
+  const { products } = useCatalog();
 
   return (
     <div className="relative w-full aspect-[10/8] max-w-[640px] mx-auto">

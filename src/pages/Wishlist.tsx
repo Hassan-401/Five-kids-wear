@@ -3,14 +3,15 @@ import ProductCard from "../components/ProductCard";
 import DeptProductCard from "../components/dept/DeptProductCard";
 import Newsletter from "../components/Newsletter";
 import { EmptyState } from "./Cart";
-import { products } from "../data/catalog";
 import { deptProducts } from "../data/departments";
 import { useLang } from "../i18n/LanguageContext";
+import { useCatalog } from "../context/CatalogContext";
 import { useStore } from "../context/StoreContext";
 
 export default function Wishlist() {
   const { t, pick } = useLang();
   const { wishlist } = useStore();
+  const { products } = useCatalog();
 
   const items = products.filter((p) => wishlist.includes(p.id));
   // men's / women's picks keep their own card design even in here

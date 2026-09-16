@@ -1,0 +1,62 @@
+#:schema node_modules/wrangler/config-schema.json
+#
+# Five Kids Wear — one Worker serves both the built SPA and the API.
+#
+# Before the first deploy, create the database and the media bucket and paste
+# the ids below (see README → "النشر على Cloudflare"):
+#
+#   npx wrangler d1 create five-kids-wear
+#   npx wrangler r2 bucket create five-kids-wear-media
+#
+name = "five-kids-wear"
+main = "worker/src/index.ts"
+compatibility_date = "2026-09-15"
+
+# The SPA build. Requests that match a file in dist/ are served straight from
+# the edge; everything else reaches the Worker, which answers /api/* and /media/*
+# and hands any other path back to ASSETS as index.html (client-side routing).
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[observability]
+enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "five-kids-wear"
+database_id = "bebd1a59-f48b-41cf-a3d5-dbb835e7dbd1"
+
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "five-kids-wear-media"
+
+[vars]
+# Product photos uploaded from the dashboard are served from /media/<key>.
+MEDIA_PREFIX = "/media"
+
+# ADMIN_USERNAME and ADMIN_PASSWORD are secrets, never vars — they seed the
+# first dashboard account on its first successful login:
+#   npx wrangler secret put ADMIN_USERNAME
+#   npx wrangler secret put ADMIN_PASSWORD
+
+# ─────────────────────────────────────────────────────────── الدومين ──
+# The store currently answers on the free <worker>.<account>.workers.dev URL.
+# That hostname always carries the ACCOUNT's subdomain (shared with every other
+# Worker on the account) — it cannot be made per-project.
+#
+# To put the store on its own domain and retire that URL for good:
+#   1. add the domain to Cloudflare (Workers & Pages → the Worker → Domains)
+#   2. uncomment the three lines below, with the real domain
+#   3. npm run cf:deploy
+#
+# `workers_dev = false` switches off both the workers.dev hostname and the
+# preview URL, so the account name stops appearing anywhere. Do not enable it
+# before a domain is attached, or the Worker is left with no public hostname.
+#
+# workers_dev = false
+#
+# [[routes]]
+# pattern = "fivekidswear.com"
+# custom_domain = true
