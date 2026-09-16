@@ -51,7 +51,7 @@ export default function Track() {
               <input
                 value={id}
                 onChange={(e) => setId(e.target.value)}
-                placeholder="FKW-10248"
+                placeholder="GFC-10248"
                 dir="ltr"
                 required
                 className="field text-start"

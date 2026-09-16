@@ -1,5 +1,5 @@
 /**
- * Five Kids Wear — the whole server.
+ * Gad Family Cotton — the whole server.
  *
  * One Worker answers three kinds of request:
  *   /api/*    the storefront and dashboard API
@@ -54,6 +54,7 @@ const routes: Route[] = [
   route("GET", "/api/orders/:id", ({ env, params, url }) =>
     pub.trackOrder(env, params.id, str(url.searchParams.get("phone"), 30)),
   ),
+  route("POST", "/api/messages", ({ request, env }) => pub.createMessage(request, env)),
 
   // Bosta's callback. Not a dashboard route — Bosta has no session — so the
   // secret in the path is what stands in for authentication.
@@ -146,6 +147,20 @@ const routes: Route[] = [
   route("GET", "/api/admin/settings", ({ env }) => admin.getSettings(env), true),
   route("PUT", "/api/admin/settings", ({ request, env }) => admin.saveSettings(request, env), true),
 
+  route("GET", "/api/admin/messages", ({ env, url }) => admin.listMessages(env, url), true),
+  route(
+    "PATCH",
+    "/api/admin/messages/:id",
+    ({ request, env, params }) => admin.updateMessage(request, env, params.id),
+    true,
+  ),
+  route(
+    "DELETE",
+    "/api/admin/messages/:id",
+    ({ env, params }) => admin.deleteMessage(env, params.id),
+    true,
+  ),
+
   route("GET", "/api/admin/bosta/cities", ({ env }) => admin.getBostaCities(env), true),
   route("GET", "/api/admin/bosta/pickups", ({ env }) => admin.getBostaPickups(env), true),
   route(
@@ -217,7 +232,9 @@ export default {
       return pathMatched ? fail(405, "method_not_allowed") : notFound("unknown_endpoint");
     }
 
-    // everything else is the SPA: real files, else index.html
+    // Everything else is the SPA: real files, else index.html. Security headers
+    // for all of it live in `public/_headers`, because a request that matches a
+    // real file is answered by the asset server and never reaches this code.
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;

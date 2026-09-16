@@ -1,4 +1,4 @@
--- Five Kids Wear — D1 schema.
+-- Gad Family Cotton — D1 schema.
 --
 -- Apply it with:
 --   npx wrangler d1 execute five-kids-wear --local  --file=./worker/schema.sql
@@ -7,6 +7,8 @@
 -- Money is stored as whole Egyptian pounds (INTEGER). Lists that the storefront
 -- treats as opaque (sizes, colours, images) are stored as JSON text.
 
+DROP TABLE IF EXISTS messages;
+DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
@@ -135,7 +137,7 @@ INSERT INTO shipping_rates (name_ar, name_en, price, active, sort, bosta_city) V
 /* ------------------------------------------------------------------ */
 
 CREATE TABLE orders (
-  id          TEXT PRIMARY KEY,               -- FKW-10248
+  id          TEXT PRIMARY KEY,               -- GFC-10248
   name        TEXT NOT NULL,
   phone       TEXT NOT NULL,
   email       TEXT NOT NULL DEFAULT '',
@@ -178,6 +180,42 @@ CREATE TABLE order_items (
 );
 
 CREATE INDEX idx_order_items_order ON order_items(order_id);
+
+/* ------------------------------------------------------------------ */
+/* contact inbox + login guard                                         */
+/* ------------------------------------------------------------------ */
+-- Until now the contact form and the newsletter box told the customer their
+-- message had been sent and then dropped it on the floor. Both now land here
+-- and are read from the dashboard.
+CREATE TABLE messages (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  kind       TEXT NOT NULL DEFAULT 'contact',  -- contact | newsletter
+  name       TEXT NOT NULL DEFAULT '',
+  email      TEXT NOT NULL DEFAULT '',
+  phone      TEXT NOT NULL DEFAULT '',
+  subject    TEXT NOT NULL DEFAULT '',
+  body       TEXT NOT NULL DEFAULT '',
+  handled    INTEGER NOT NULL DEFAULT 0,
+  -- SHA-256 of the sender's IP, kept only to rate-limit the form. The address
+  -- itself is never stored, so the inbox holds no bare personal data.
+  ip_hash    TEXT NOT NULL DEFAULT '',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX idx_messages_created ON messages(created_at);
+CREATE INDEX idx_messages_handled ON messages(handled);
+CREATE INDEX idx_messages_ip      ON messages(ip_hash, created_at);
+
+/* -------------------------------------------------------- login guard */
+
+-- PBKDF2 at 100k iterations makes each guess cost something, but nothing
+-- stopped an attacker running thousands in parallel. After enough failures in
+-- a row the username stops accepting attempts for a while.
+CREATE TABLE login_attempts (
+  username     TEXT PRIMARY KEY,
+  fails        INTEGER NOT NULL DEFAULT 0,
+  locked_until TEXT NOT NULL DEFAULT ''
+);
 
 /* ------------------------------------------------------------------ */
 /* dashboard accounts                                                  */

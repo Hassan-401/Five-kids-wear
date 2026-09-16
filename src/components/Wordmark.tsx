@@ -2,6 +2,10 @@
  * The brand name set as type in the cartoon's lettering — chunky capitals,
  * a navy outline and a dropped navy shadow, like the logo. Always laid out
  * left-to-right: it is a Latin name even in the Arabic build.
+ *
+ * "Family Cotton" is a good deal wider than the old "Kids Wear", so the second
+ * line is a step smaller than the first at every size — the header has a fixed
+ * band of width to fit it in.
  */
 export default function Wordmark({
   size = "md",
@@ -11,11 +15,11 @@ export default function Wordmark({
   className?: string;
 }) {
   const scale = {
-    sm: { five: "text-[0.8rem]", name: "text-lg", outline: "1.5px", depth: "2px" },
-    md: { five: "text-base", name: "text-[1.6rem]", outline: "2px", depth: "2.5px" },
+    sm: { first: "text-[0.8rem]", name: "text-base", outline: "1.5px", depth: "2px" },
+    md: { first: "text-base", name: "text-[1.35rem]", outline: "2px", depth: "2.5px" },
     lg: {
-      five: "text-4xl sm:text-5xl",
-      name: "text-5xl sm:text-6xl xl:text-7xl",
+      first: "text-4xl sm:text-5xl",
+      name: "text-4xl sm:text-5xl xl:text-6xl",
       outline: "3px",
       depth: "5px",
     },
@@ -27,9 +31,9 @@ export default function Wordmark({
       className={`toon-word block text-start ${className}`}
       style={{ "--o": scale.outline, "--d": scale.depth } as React.CSSProperties}
     >
-      <span className={`block text-pink-500 ${scale.five}`}>Five</span>
+      <span className={`block text-pink-500 ${scale.first}`}>Gad</span>
       <span className={`block whitespace-nowrap text-sky-400 ${scale.name}`}>
-        Kids Wear
+        Family Cotton
       </span>
     </span>
   );

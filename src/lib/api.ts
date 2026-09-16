@@ -205,6 +205,19 @@ export type BostaCity = { id: string; name: string; nameAr: string; sector: numb
 export type BostaPickup = { id: string; name: string; address: string };
 export type Shipment = { id: string; trackingNumber: string; url: string };
 
+/** One row of the contact inbox: a form message, or a newsletter sign-up. */
+export type InboxMessage = {
+  id: number;
+  kind: "contact" | "newsletter";
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  body: string;
+  handled: boolean;
+  createdAt: string;
+};
+
 /** A dashboard account. There are no roles — every admin can do everything. */
 export type AdminUser = {
   id: number;
@@ -267,6 +280,16 @@ export const api = {
       "/orders",
       order,
     ),
+
+  /** The contact form and the newsletter box both land in the same inbox. */
+  sendMessage: (message: {
+    kind: "contact" | "newsletter";
+    email: string;
+    name?: string;
+    phone?: string;
+    subject?: string;
+    body?: string;
+  }) => send<{ ok: true }>("POST", "/messages", message),
 
   trackOrder: (id: string, phone: string) =>
     get<TrackedOrder>(
@@ -351,6 +374,14 @@ export const api = {
     },
 
     seed: () => send<{ products: number; categories: number }>("POST", "/admin/seed"),
+
+    messages: (kind?: string) =>
+      get<{ messages: InboxMessage[]; unread: number }>(
+        `/admin/messages${kind ? `?kind=${encodeURIComponent(kind)}` : ""}`,
+      ),
+    updateMessage: (id: number, handled: boolean) =>
+      send<{ ok: true }>("PATCH", `/admin/messages/${id}`, { handled }),
+    deleteMessage: (id: number) => send<{ ok: true }>("DELETE", `/admin/messages/${id}`),
 
     /** Bosta. Each of these fails with `bosta_error` + a `message` from Bosta. */
     bostaCities: () => get<{ cities: BostaCity[] }>("/admin/bosta/cities"),

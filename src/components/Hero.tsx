@@ -2,26 +2,18 @@ import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
 import {
   CartIcon,
-  FacebookIcon,
   HeartIcon,
-  InstagramIcon,
-  TiktokIcon,
-  YoutubeIcon,
 } from "./Icons";
 import PhotoCollage from "./PhotoCollage";
 import usePointerParallax from "./usePointerParallax";
 import { Bolt, CloudDivider, Moon, Sparkle, Star } from "./Decor";
 import Wordmark from "./Wordmark";
-
-const socials = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook", color: "text-[#1877f2]" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram", color: "text-[#e1306c]" },
-  { Icon: TiktokIcon, href: "#", label: "TikTok", color: "text-[#111]" },
-  { Icon: YoutubeIcon, href: "#", label: "YouTube", color: "text-[#ff0000]" },
-];
+import { useCatalog } from "../context/CatalogContext";
+import { socialLinks } from "../lib/socials";
 
 export default function Hero() {
   const { t } = useLang();
+  const socials = socialLinks(useCatalog().settings);
   const rootRef = usePointerParallax<HTMLElement>(20);
 
   return (
@@ -97,6 +89,8 @@ export default function Hero() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   aria-label={label}
                   className={`grid place-items-center w-10 h-10 rounded-full bg-white shadow-md transition hover:-translate-y-1 hover:shadow-lg ${color}`}
                 >

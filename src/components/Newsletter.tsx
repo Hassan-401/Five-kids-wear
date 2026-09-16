@@ -1,18 +1,33 @@
 import { useState } from "react";
 import { useLang } from "../i18n/LanguageContext";
 import { MailIcon } from "./Icons";
+import { api } from "../lib/api";
 import { Bolt, CloudDivider, Sparkle } from "./Decor";
 
 export default function Newsletter() {
   const { t } = useLang();
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) return;
-    setDone(true);
-    setEmail("");
+    if (!email.trim() || busy) return;
+
+    setBusy(true);
+    setFailed(false);
+    try {
+      await api.sendMessage({ kind: "newsletter", email: email.trim() });
+      setDone(true);
+      setEmail("");
+    } catch {
+      // signing up twice already counts as success on the server, so reaching
+      // here means the address never got stored
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -45,17 +60,23 @@ export default function Newsletter() {
                 onChange={(e) => {
                   setEmail(e.target.value);
                   setDone(false);
+                  setFailed(false);
                 }}
                 placeholder={t("news.placeholder")}
                 aria-label={t("news.placeholder")}
                 className="flex-1 rounded-full px-5 py-2.5 outline-none bg-transparent"
               />
-              <button type="submit" className="btn-primary px-8 py-2.5">
-                {t("news.cta")}
+              <button type="submit" className="btn-primary px-8 py-2.5" disabled={busy}>
+                {busy ? t("common.loading") : t("news.cta")}
               </button>
             </div>
             {done && (
               <p className="mt-3 font-bold text-pink-600 anim-pop">{t("news.done")}</p>
+            )}
+            {failed && (
+              <p role="alert" className="mt-3 font-bold text-red-600">
+                {t("news.failed")}
+              </p>
             )}
           </form>
         </div>

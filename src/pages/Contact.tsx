@@ -3,6 +3,7 @@ import PageHeader from "../components/PageHeader";
 import Newsletter from "../components/Newsletter";
 import { useLang } from "../i18n/LanguageContext";
 import { useCatalog } from "../context/CatalogContext";
+import { ApiError, api } from "../lib/api";
 import { socialLinks } from "../lib/socials";
 import {
   ClockIcon,
@@ -17,11 +18,39 @@ export default function Contact() {
   const { settings } = useCatalog();
   const socials = socialLinks(settings);
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
-    (e.target as HTMLFormElement).reset();
+    if (sending) return;
+
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+
+    setSending(true);
+    setError(null);
+    try {
+      await api.sendMessage({
+        kind: "contact",
+        name: String(data.get("name") ?? ""),
+        email: String(data.get("email") ?? ""),
+        subject: String(data.get("subject") ?? ""),
+        body: String(data.get("message") ?? ""),
+      });
+      setSent(true);
+      form.reset();
+    } catch (err) {
+      // the owner reads these in the dashboard, so a failure has to be shown —
+      // a thank-you over a message that never arrived is worse than an error
+      setError(
+        err instanceof ApiError && err.code === "too_many_messages"
+          ? t("contact.tooMany")
+          : t("contact.failed"),
+      );
+    } finally {
+      setSending(false);
+    }
   };
 
   type InfoRow = {
@@ -61,35 +90,49 @@ export default function Contact() {
                 <span className="font-bold text-navy-600 text-sm">
                   {t("contact.name")}
                 </span>
-                <input required className="field" onChange={() => setSent(false)} />
+                <input
+                  name="name"
+                  required
+                  className="field"
+                  onChange={() => setSent(false)}
+                />
               </label>
               <label className="flex flex-col gap-1.5">
                 <span className="font-bold text-navy-600 text-sm">
                   {t("checkout.email")}
                 </span>
-                <input type="email" required className="field" />
+                <input name="email" type="email" required className="field" />
               </label>
               <label className="flex flex-col gap-1.5 sm:col-span-2">
                 <span className="font-bold text-navy-600 text-sm">
                   {t("contact.subject")}
                 </span>
-                <input required className="field" />
+                <input name="subject" required className="field" />
               </label>
               <label className="flex flex-col gap-1.5 sm:col-span-2">
                 <span className="font-bold text-navy-600 text-sm">
                   {t("contact.message")}
                 </span>
-                <textarea rows={6} required className="field" />
+                <textarea name="message" rows={6} required className="field" />
               </label>
             </div>
 
-            <button type="submit" className="btn-primary mt-6">
-              {t("common.send")}
+            <button type="submit" className="btn-primary mt-6" disabled={sending}>
+              {sending ? t("common.loading") : t("common.send")}
             </button>
 
             {sent && (
               <p className="mt-4 rounded-2xl bg-emerald-50 text-emerald-700 font-bold px-4 py-3 anim-pop">
                 {t("contact.sent")}
+              </p>
+            )}
+
+            {error && (
+              <p
+                role="alert"
+                className="mt-4 rounded-2xl bg-red-50 text-red-700 font-bold px-4 py-3"
+              >
+                {error}
               </p>
             )}
           </form>

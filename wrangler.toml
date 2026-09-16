@@ -1,6 +1,6 @@
 #:schema node_modules/wrangler/config-schema.json
 #
-# Five Kids Wear — one Worker serves both the built SPA and the API.
+# Gad Family Cotton — one Worker serves both the built SPA and the API.
 #
 # Before the first deploy, create the database and the media bucket and paste
 # the ids below (see README → "النشر على Cloudflare"):
@@ -8,9 +8,19 @@
 #   npx wrangler d1 create five-kids-wear
 #   npx wrangler r2 bucket create five-kids-wear-media
 #
+# The Worker, the D1 database and the R2 bucket keep their original names on
+# purpose. Renaming any of them does not rename anything — it creates a new,
+# empty one and strands the live secrets, orders and product photos on the old.
+# The names are internal; nothing here is ever shown to a shopper.
 name = "five-kids-wear"
 main = "worker/src/index.ts"
 compatibility_date = "2026-09-15"
+
+# The free <worker>.<account>.workers.dev URL, retired now that the real domain
+# is serving. This has to stay a TOP-LEVEL key: put it after [vars] and TOML
+# reads it as an environment variable called "workers_dev" instead, which does
+# nothing at all.
+workers_dev = false
 
 # The SPA build. Requests that match a file in dist/ are served straight from
 # the edge; everything else reaches the Worker, which answers /api/* and /media/*
@@ -42,21 +52,16 @@ MEDIA_PREFIX = "/media"
 #   npx wrangler secret put ADMIN_PASSWORD
 
 # ─────────────────────────────────────────────────────────── الدومين ──
-# The store currently answers on the free <worker>.<account>.workers.dev URL.
-# That hostname always carries the ACCOUNT's subdomain (shared with every other
-# Worker on the account) — it cannot be made per-project.
+# The store answers on gadfamilycotton.com, and on www as well.
 #
-# To put the store on its own domain and retire that URL for good:
-#   1. add the domain to Cloudflare (Workers & Pages → the Worker → Domains)
-#   2. uncomment the three lines below, with the real domain
-#   3. npm run cf:deploy
-#
-# `workers_dev = false` switches off both the workers.dev hostname and the
-# preview URL, so the account name stops appearing anywhere. Do not enable it
-# before a domain is attached, or the Worker is left with no public hostname.
-#
-# workers_dev = false
-#
-# [[routes]]
-# pattern = "fivekidswear.com"
-# custom_domain = true
+# `custom_domain = true` makes Cloudflare create the DNS record and issue the
+# certificate itself, so there is nothing to add by hand in the DNS tab. A new
+# custom domain takes a few minutes to get that certificate, during which it
+# refuses connections — that is expected, not a misconfiguration.
+[[routes]]
+pattern = "gadfamilycotton.com"
+custom_domain = true
+
+[[routes]]
+pattern = "www.gadfamilycotton.com"
+custom_domain = true

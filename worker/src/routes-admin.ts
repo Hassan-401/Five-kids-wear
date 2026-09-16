@@ -5,10 +5,13 @@
 import {
   createSession,
   clearCookie,
+  clearFailures,
   destroySession,
   ensureFirstAdmin,
   hashPassword,
+  lockedFor,
   purgeExpiredSessions,
+  recordFailure,
   sessionCookie,
   verifyPassword,
   type AdminSession,
@@ -52,6 +55,11 @@ export async function login(request: Request, env: Env) {
   const password = typeof body?.password === "string" ? body.password : "";
   if (!username || !password) return badRequest("missing_credentials");
 
+  // too many wrong guesses in a row and this username stops answering for a
+  // while — checked before the password is even hashed
+  const wait = await lockedFor(env, username);
+  if (wait > 0) return fail(429, "too_many_attempts", { retryAfter: wait });
+
   // lets the very first sign-in create the account from the deploy secrets
   await ensureFirstAdmin(env);
 
@@ -60,9 +68,11 @@ export async function login(request: Request, env: Env) {
     .first<{ id: number; username: string; password_hash: string }>();
 
   if (!admin || !(await verifyPassword(password, admin.password_hash))) {
+    await recordFailure(env, username);
     return unauthorized("invalid_credentials");
   }
 
+  await clearFailures(env, username);
   await purgeExpiredSessions(env);
   const token = await createSession(env, admin.id);
 
@@ -861,4 +871,68 @@ export async function shipWithBosta(env: Env, id: string) {
   } catch (err) {
     return bostaFailed(err);
   }
+}
+
+/* ------------------------------------------------------------ messages */
+
+type MessageRow = {
+  id: number;
+  kind: string;
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  body: string;
+  handled: number;
+  created_at: string;
+};
+
+/** The contact inbox and the newsletter sign-ups, newest first. */
+export async function listMessages(env: Env, url: URL) {
+  const kind = str(url.searchParams.get("kind"), 20);
+  const where = kind === "contact" || kind === "newsletter" ? "WHERE kind = ?" : "";
+  const binds = where ? [kind] : [];
+
+  const { results } = await env.DB.prepare(
+    `SELECT * FROM messages ${where} ORDER BY created_at DESC LIMIT 200`,
+  )
+    .bind(...binds)
+    .all<MessageRow>();
+
+  const unread = await env.DB.prepare(
+    "SELECT COUNT(*) AS n FROM messages WHERE handled = 0",
+  ).first<{ n: number }>();
+
+  return json({
+    messages: results.map((m) => ({
+      id: m.id,
+      kind: m.kind,
+      name: m.name,
+      email: m.email,
+      phone: m.phone,
+      subject: m.subject,
+      body: m.body,
+      handled: !!m.handled,
+      createdAt: m.created_at,
+    })),
+    unread: unread?.n ?? 0,
+  });
+}
+
+export async function updateMessage(request: Request, env: Env, id: string) {
+  const body = await readJson<{ handled?: boolean }>(request);
+  if (!body) return badRequest("invalid_body");
+
+  const res = await env.DB.prepare("UPDATE messages SET handled = ? WHERE id = ?")
+    .bind(bool(body.handled) ? 1 : 0, Number(id))
+    .run();
+
+  if (!res.meta.changes) return notFound("message_not_found");
+  return json({ ok: true });
+}
+
+export async function deleteMessage(env: Env, id: string) {
+  const res = await env.DB.prepare("DELETE FROM messages WHERE id = ?").bind(Number(id)).run();
+  if (!res.meta.changes) return notFound("message_not_found");
+  return json({ ok: true });
 }

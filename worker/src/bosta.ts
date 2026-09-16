@@ -46,7 +46,7 @@ async function call<T>(
       headers: {
         authorization: key,
         "content-type": "application/json",
-        "x-requested-by": "five-kids-wear",
+        "x-requested-by": "gad-family-cotton",
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });

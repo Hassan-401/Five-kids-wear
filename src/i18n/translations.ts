@@ -5,7 +5,7 @@ type Dict = Record<string, string>;
 export const translations: Record<Lang, Dict> = {
   ar: {
     /* generic */
-    "brand.name": "Five Kids Wear",
+    "brand.name": "Gad Family Cotton",
     "brand.tagline": "ملابس أطفال من قطن ناعم",
     "common.currency": "ج.م",
     "common.shopNow": "تسوق الآن",
@@ -109,6 +109,7 @@ export const translations: Record<Lang, Dict> = {
     "news.placeholder": "أدخل بريدك الإلكتروني",
     "news.cta": "اشترك",
     "news.done": "تم الاشتراك بنجاح! 💖",
+    "news.failed": "معلش، مقدرناش نسجّل إيميلك. جرّب تاني.",
 
     /* footer */
     "footer.quickLinks": "روابط سريعة",
@@ -190,7 +191,7 @@ export const translations: Record<Lang, Dict> = {
     /* about */
     "about.title": "من نحن",
     "about.lead":
-      "Five Kids Wear علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
+      "Gad Family Cotton علامة مصرية متخصصة في ملابس الأطفال، نصنع كل قطعة من قطن ناعم يناسب بشرة طفلك، بألوان مبهجة وتصميمات عصرية.",
     "about.story.title": "قصتنا",
     "about.story.body":
       "بدأت الفكرة من خمسة أطفال .. ومن رغبة بسيطة في أن يجد كل أب وأم ملابس مريحة وجميلة وبسعر مناسب. اليوم صرنا عائلة كبيرة تضم آلاف الأمهات في كل محافظات مصر.",
@@ -213,6 +214,8 @@ export const translations: Record<Lang, Dict> = {
     "contact.subject": "الموضوع",
     "contact.message": "الرسالة",
     "contact.sent": "تم إرسال رسالتك، شكراً لك! 💖",
+    "contact.failed": "معلش، الرسالة مشيتش. جرّب تاني أو كلّمنا على الواتساب.",
+    "contact.tooMany": "بعتّ رسائل كتير في وقت قصير — استنى شوية وجرّب تاني.",
     "contact.phone": "الهاتف",
     "contact.email": "البريد",
     "contact.address": "العنوان",
@@ -236,7 +239,7 @@ export const translations: Record<Lang, Dict> = {
   },
 
   en: {
-    "brand.name": "Five Kids Wear",
+    "brand.name": "Gad Family Cotton",
     "brand.tagline": "Soft cotton clothes for happy kids",
     "common.currency": "EGP",
     "common.shopNow": "Shop Now",
@@ -332,6 +335,7 @@ export const translations: Record<Lang, Dict> = {
     "news.placeholder": "Enter your email",
     "news.cta": "Subscribe",
     "news.done": "Subscribed successfully! 💖",
+    "news.failed": "Sorry, we could not sign you up. Please try again.",
 
     "footer.quickLinks": "Quick links",
     "footer.follow": "Follow us",
@@ -406,7 +410,7 @@ export const translations: Record<Lang, Dict> = {
 
     "about.title": "About us",
     "about.lead":
-      "Five Kids Wear is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
+      "Gad Family Cotton is an Egyptian brand specialised in kids clothing. Every piece is made of soft cotton that suits your child's skin, in joyful colors and modern designs.",
     "about.story.title": "Our story",
     "about.story.body":
       "It started with five kids .. and a simple wish: that every parent could find comfortable, beautiful clothes at a fair price. Today we are a big family of thousands of mums across Egypt.",
@@ -429,6 +433,8 @@ export const translations: Record<Lang, Dict> = {
     "contact.subject": "Subject",
     "contact.message": "Message",
     "contact.sent": "Your message has been sent, thank you! 💖",
+    "contact.failed": "Sorry, your message did not go through. Try again, or message us on WhatsApp.",
+    "contact.tooMany": "That is a lot of messages in a short time — please wait a little and try again.",
     "contact.phone": "Phone",
     "contact.email": "Email",
     "contact.address": "Address",

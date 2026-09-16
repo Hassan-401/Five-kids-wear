@@ -11,7 +11,7 @@ import {
   type ProductRow,
   type ShippingRow,
 } from "./types";
-import { badRequest, json, money, newOrderId, notFound, readJson, str } from "./util";
+import { badRequest, fail, json, money, newOrderId, notFound, readJson, str } from "./util";
 
 /* ------------------------------------------------------------ settings */
 
@@ -108,6 +108,25 @@ type OrderInput = {
 };
 
 /**
+ * Picks an order reference nothing else is using.
+ *
+ * `id` is the primary key, so a clash would fail the insert and lose the sale.
+ * Six random digits make that unlikely; checking makes it not happen.
+ */
+async function uniqueOrderId(env: Env): Promise<string> {
+  for (let i = 0; i < 6; i++) {
+    const id = newOrderId();
+    const taken = await env.DB.prepare("SELECT id FROM orders WHERE id = ?")
+      .bind(id)
+      .first<{ id: string }>();
+    if (!taken) return id;
+  }
+  // six collisions in a row means the table is implausibly full; the timestamp
+  // keeps the order rather than dropping it
+  return `GFC-${Date.now().toString().slice(-8)}`;
+}
+
+/**
  * Creates an order.
  *
  * Every price is read back out of the database — the browser sends product ids
@@ -178,7 +197,7 @@ export async function createOrder(request: Request, env: Env) {
   const shipping = freeOver > 0 && subtotal >= freeOver ? 0 : baseShipping;
   const total = subtotal + shipping;
 
-  const id = newOrderId();
+  const id = await uniqueOrderId(env);
 
   await env.DB.batch([
     env.DB.prepare(
@@ -267,4 +286,86 @@ export async function trackOrder(env: Env, id: string, phone: string) {
       price: i.price,
     })),
   });
+}
+
+/* ------------------------------------------------------------ messages */
+
+/** Rate limiting keys on this, so the address itself is never stored. */
+async function hashIp(request: Request): Promise<string> {
+  const ip = request.headers.get("cf-connecting-ip") ?? "";
+  if (!ip) return "";
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip));
+  return [...new Uint8Array(digest)]
+    .slice(0, 8)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+type MessageInput = {
+  kind?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  subject?: string;
+  body?: string;
+};
+
+/** How many messages one address may send in ten minutes. */
+const MESSAGE_BURST = 5;
+
+/**
+ * The contact form and the newsletter box.
+ *
+ * Both used to show the customer a thank-you and then throw the message away.
+ * They now land in the dashboard inbox.
+ */
+export async function createMessage(request: Request, env: Env) {
+  const body = await readJson<MessageInput>(request);
+  if (!body) return badRequest("invalid_body");
+
+  const kind = str(body.kind, 20) === "newsletter" ? "newsletter" : "contact";
+  const email = str(body.email, 160);
+  const text = str(body.body, 4000);
+
+  // a newsletter sign-up is just an address; a contact message needs words
+  if (!email) return badRequest("email_required");
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return badRequest("invalid_email");
+  if (kind === "contact" && !text) return badRequest("message_required");
+
+  const ipHash = await hashIp(request);
+  if (ipHash) {
+    const recent = await env.DB.prepare(
+      "SELECT COUNT(*) AS n FROM messages WHERE ip_hash = ? AND created_at > datetime('now', '-10 minutes')",
+    )
+      .bind(ipHash)
+      .first<{ n: number }>();
+    if ((recent?.n ?? 0) >= MESSAGE_BURST) return fail(429, "too_many_messages");
+  }
+
+  // the same address signing up twice is not an error, and not a second row
+  if (kind === "newsletter") {
+    const already = await env.DB.prepare(
+      "SELECT id FROM messages WHERE kind = 'newsletter' AND email = ?",
+    )
+      .bind(email)
+      .first<{ id: number }>();
+    if (already) return json({ ok: true }, { status: 201 });
+  }
+
+  await env.DB.prepare(
+    `INSERT INTO messages (kind, name, email, phone, subject, body, ip_hash)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+  )
+    .bind(
+      kind,
+      str(body.name, 120),
+      email,
+      str(body.phone, 30),
+      str(body.subject, 200),
+      text,
+      ipHash,
+    )
+    .run();
+
+  return json({ ok: true }, { status: 201 });
 }

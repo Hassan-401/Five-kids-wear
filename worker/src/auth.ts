@@ -150,3 +150,54 @@ export async function ensureFirstAdmin(env: Env): Promise<void> {
     .bind(username, await hashPassword(password))
     .run();
 }
+
+/* -------------------------------------------------------- login guard */
+
+/** Failures allowed in a row before the username stops accepting attempts. */
+const MAX_FAILS = 8;
+const LOCK_MINUTES = 15;
+
+/**
+ * How long this username is locked out for, in seconds — 0 when it is free to
+ * try. Hashing already costs an attacker ~100ms a guess; this stops them
+ * running thousands of those in parallel.
+ */
+export async function lockedFor(env: Env, username: string): Promise<number> {
+  const row = await env.DB.prepare(
+    "SELECT locked_until FROM login_attempts WHERE username = ?",
+  )
+    .bind(username.toLowerCase())
+    .first<{ locked_until: string }>();
+  if (!row?.locked_until) return 0;
+
+  const remaining = Date.parse(row.locked_until) - Date.now();
+  return remaining > 0 ? Math.ceil(remaining / 1000) : 0;
+}
+
+/** Counts a failed attempt, and locks the username once there are too many. */
+export async function recordFailure(env: Env, username: string): Promise<void> {
+  const key = username.toLowerCase();
+  const row = await env.DB.prepare("SELECT fails FROM login_attempts WHERE username = ?")
+    .bind(key)
+    .first<{ fails: number }>();
+
+  const fails = (row?.fails ?? 0) + 1;
+  const lock = fails >= MAX_FAILS;
+  const until = lock ? new Date(Date.now() + LOCK_MINUTES * 60_000).toISOString() : "";
+
+  await env.DB.prepare(
+    `INSERT INTO login_attempts (username, fails, locked_until) VALUES (?, ?, ?)
+     ON CONFLICT(username) DO UPDATE SET fails = excluded.fails, locked_until = excluded.locked_until`,
+  )
+    // the counter restarts once the lock is applied, so the next burst of
+    // wrong guesses has to earn its own lock rather than locking instantly
+    .bind(key, lock ? 0 : fails, until)
+    .run();
+}
+
+/** A correct password wipes the record, so normal use is never penalised. */
+export async function clearFailures(env: Env, username: string): Promise<void> {
+  await env.DB.prepare("DELETE FROM login_attempts WHERE username = ?")
+    .bind(username.toLowerCase())
+    .run();
+}

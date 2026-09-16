@@ -5,31 +5,22 @@ import { useStore } from "../context/StoreContext";
 import {
   CartIcon,
   CloseIcon,
-  FacebookIcon,
   GiftIcon,
   GlobeIcon,
   HeartIcon,
-  InstagramIcon,
   MenuIcon,
   SearchIcon,
-  TiktokIcon,
   TruckIcon,
-  YoutubeIcon,
 } from "./Icons";
 import Wordmark from "./Wordmark";
 import { useCatalog } from "../context/CatalogContext";
-
-const socials = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram" },
-  { Icon: TiktokIcon, href: "#", label: "TikTok" },
-  { Icon: YoutubeIcon, href: "#", label: "YouTube" },
-];
+import { socialLinks } from "../lib/socials";
 
 export default function Header() {
   const { t, pick, toggleLang, lang } = useLang();
   const { cartCount, wishlist } = useStore();
-  const { categories } = useCatalog();
+  const { categories, settings } = useCatalog();
+  const socials = socialLinks(settings);
   const navigate = useNavigate();
 
   // the nav follows the live categories, so anything added in the dashboard
@@ -128,6 +119,8 @@ export default function Header() {
               <a
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noreferrer noopener"
                 aria-label={label}
                 className="grid place-items-center w-8 h-8 rounded-full bg-white/80 hover:bg-white hover:text-pink-700 transition shadow-sm"
               >
@@ -278,6 +271,8 @@ export default function Header() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   aria-label={label}
                   className="grid place-items-center w-9 h-9 rounded-full bg-pink-50"
                 >

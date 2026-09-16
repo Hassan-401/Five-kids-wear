@@ -43,8 +43,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     root.dir = dir;
     document.title =
       lang === "ar"
-        ? "Five Kids Wear | ملابس أطفال من قطن ناعم"
-        : "Five Kids Wear | Soft cotton clothes for happy kids";
+        ? "Gad Family Cotton | ملابس أطفال من قطن ناعم"
+        : "Gad Family Cotton | Soft cotton clothes for happy kids";
     window.localStorage.setItem(STORAGE_KEY, lang);
   }, [lang, dir]);
 

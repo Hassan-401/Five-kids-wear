@@ -7,6 +7,7 @@ import Overview from "./Overview";
 import Products from "./Products";
 import Categories from "./Categories";
 import Orders from "./Orders";
+import Messages from "./Messages";
 import Shipping from "./Shipping";
 import Settings from "./Settings";
 import { Loading } from "./ui";
@@ -15,6 +16,7 @@ import {
   CloseIcon,
   GiftIcon,
   GlobeIcon,
+  MailIcon,
   MenuIcon,
   TruckIcon,
 } from "../components/Icons";
@@ -71,6 +73,7 @@ export default function AdminApp() {
     { to: "/admin/orders", end: false, label: pick("الطلبات", "Orders"), Icon: CartIcon },
     { to: "/admin/products", end: false, label: pick("المنتجات", "Products"), Icon: GiftIcon },
     { to: "/admin/categories", end: false, label: pick("الأقسام", "Categories"), Icon: GiftIcon },
+    { to: "/admin/messages", end: false, label: pick("الرسائل", "Messages"), Icon: MailIcon },
     { to: "/admin/shipping", end: false, label: pick("الشحن", "Shipping"), Icon: TruckIcon },
     { to: "/admin/settings", end: false, label: pick("الإعدادات", "Settings"), Icon: GlobeIcon },
   ];
@@ -156,6 +159,7 @@ export default function AdminApp() {
               <Route path="orders" element={<Orders />} />
               <Route path="products" element={<Products />} />
               <Route path="categories" element={<Categories />} />
+              <Route path="messages" element={<Messages />} />
               <Route path="shipping" element={<Shipping />} />
               <Route path="settings" element={<Settings />} />
               <Route
@@ -178,7 +182,7 @@ function Brand() {
   return (
     <a href="/" className="flex items-center gap-2" dir="ltr">
       <img src="/images/logo.webp" alt="" aria-hidden="true" className="h-9 w-auto" />
-      <span className="text-sm font-extrabold text-slate-800">Five Kids Wear</span>
+      <span className="text-sm font-extrabold text-slate-800">Gad Family Cotton</span>
     </a>
   );
 }

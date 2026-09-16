@@ -8,15 +8,14 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "check": "tsc -b && tsc -p worker --noEmit",
-
     "cf:dev": "npm run build && wrangler dev",
     "cf:deploy": "npm run build && wrangler deploy",
-
     "db:schema": "wrangler d1 execute five-kids-wear --local --file=./worker/schema.sql",
     "db:schema:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/schema.sql",
-
     "db:migrate": "wrangler d1 execute five-kids-wear --local --file=./worker/migrations/001_bosta.sql",
-    "db:migrate:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/migrations/001_bosta.sql"
+    "db:migrate:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/migrations/001_bosta.sql",
+    "db:migrate2": "wrangler d1 execute five-kids-wear --local --file=./worker/migrations/002_messages_and_login_guard.sql",
+    "db:migrate2:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/migrations/002_messages_and_login_guard.sql"
   },
   "dependencies": {
     "react": "^19.1.0",

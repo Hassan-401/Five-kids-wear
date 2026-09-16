@@ -74,10 +74,16 @@ export function newId(prefix: string): string {
   return `${prefix}_${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`;
 }
 
-/** Order references read as FKW-10248 — short enough to give over the phone. */
+/**
+ * Order references read as GFC-104821 — short enough to give over the phone.
+ *
+ * Six digits rather than five: with five, the birthday problem puts an even
+ * chance on two orders colliding by about the 350th, and a collision means the
+ * insert fails and the customer loses the sale. `uniqueOrderId` still checks.
+ */
 export function newOrderId(): string {
-  const n = 10000 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % 89999);
-  return `FKW-${n}`;
+  const n = 100000 + Math.floor(crypto.getRandomValues(new Uint32Array(1))[0] % 899999);
+  return `GFC-${n}`;
 }
 
 export const nowIso = () => new Date().toISOString().replace("T", " ").slice(0, 19);
