@@ -56,26 +56,27 @@ export default function Hero() {
 
       <div className="container-x relative py-10 sm:py-12 lg:py-14">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-6">
-          {/* the crew + the name — the start half of the split */}
+          {/* the mark + the name — the start half of the split */}
           <div className="order-1 lg:w-1/2 shrink-0 flex flex-col items-center text-center">
-            {/* characters with the name set across their feet, like the logo */}
             <div className="flex flex-col items-center">
               <div
-                className="parallax-layer w-72 sm:w-[21rem] xl:w-[23rem]"
+                className="parallax-layer w-56 sm:w-64 xl:w-72"
                 style={{ "--depth": 0.8 } as React.CSSProperties}
               >
                 <img
-                  src="/images/characters/team.webp"
+                  src="/images/logo.webp"
                   alt=""
                   aria-hidden="true"
-                  width={820}
-                  height={764}
+                  width={600}
+                  height={600}
                   className="w-full h-auto select-none pointer-events-none anim-bob drop-shadow-[0_22px_22px_rgba(34,53,140,.22)]"
                   style={{ animationDuration: "6s" }}
                 />
               </div>
 
-              <h1 className="relative z-10 -mt-14 sm:-mt-16 anim-pop">
+              {/* the logo is a round crest, so the name sits under it rather
+                  than overlapping the way it did across the old characters */}
+              <h1 className="relative z-10 mt-1 anim-pop">
                 <Wordmark size="lg" className="!text-center" />
               </h1>
             </div>

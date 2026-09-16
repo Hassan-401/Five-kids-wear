@@ -9,6 +9,10 @@
   /* cartoon lettering for the brand name and Latin headings; Arabic glyphs
      fall through to Baloo Bhaijaan 2 */
   --font-brand: "Luckiest Guy", "Baloo Bhaijaan 2", system-ui, sans-serif;
+  /* The brand name only. It follows the script embroidered on the logo, which
+     is why it is separate from --font-brand: section headings keep the chunky
+     cartoon face, the name matches the mark. */
+  --font-wordmark: "Kaushan Script", "Baloo Bhaijaan 2", cursive;
 
   /* Five PJ Masks palette — light blue (لبني) and pink lead, the navy of the
      cartoon's night sky carries outlines and text */
@@ -217,6 +221,22 @@
       0 calc(var(--o) + var(--d)) 0 var(--ink),
       calc(var(--o) * 0.7) calc(var(--o) + var(--d)) 0 var(--ink),
       calc(var(--o) * -0.7) calc(var(--o) + var(--d)) 0 var(--ink);
+  }
+
+  /* The brand name, set like the script stitched on the logo.
+     A script has thin joins, so the chunky `--o` outline of `.toon-word` would
+     close them up and turn the word into a blob — this leans on a white lift
+     and a soft navy shadow instead, which keeps the strokes readable on both
+     the white header and the hero's gradient. */
+  .brand-word {
+    font-family: var(--font-wordmark);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: 0.005em;
+    line-height: 1.12;
+    text-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.9),
+      0 3px 8px rgba(34, 53, 140, 0.22);
   }
 
   /* Section headings: the same lettering, lighter touch — fill plus a

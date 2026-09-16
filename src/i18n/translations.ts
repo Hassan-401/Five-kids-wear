@@ -61,7 +61,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.track": "تتبع طلبك",
 
     /* hero */
-    "hero.subtitle": "أبطال بالليل .. ومرتاحين طول اليوم",
+    "hero.subtitle": "من عيلتنا لعيلتك .. قطن ناعم طول اليوم",
 
     /* categories */
     "cat.title": "تسوق حسب الفئة",
@@ -293,7 +293,7 @@ export const translations: Record<Lang, Dict> = {
     "nav.contact": "Contact us",
     "nav.track": "Track your order",
 
-    "hero.subtitle": "Heroes by night .. comfy all day long",
+    "hero.subtitle": "From our family to yours .. soft cotton all day long",
 
     "cat.title": "Shop by category",
     "cat.boys": "Boys clothing",
