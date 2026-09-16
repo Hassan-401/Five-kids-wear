@@ -22,23 +22,12 @@ export default function FeatureStrip() {
       />
 
       <div className="container-x relative py-20 sm:py-24">
-        {/* Catboy and Gekko keep watch at either end */}
-        <img
-          src="/images/characters/catboy.webp"
-          alt=""
-          aria-hidden="true"
-          className="hidden xl:block absolute bottom-10 start-0 w-40 select-none pointer-events-none drop-shadow-[0_14px_16px_rgba(34,53,140,.2)]"
-        />
-        <img
-          src="/images/characters/gekko.webp"
-          alt=""
-          aria-hidden="true"
-          className="hidden xl:block absolute bottom-10 end-0 w-40 select-none pointer-events-none drop-shadow-[0_14px_16px_rgba(34,53,140,.2)]"
-        />
         <Star className="absolute top-14 start-[26%] w-5 h-5 anim-twinkle" />
         <Bolt className="absolute top-16 end-[28%] w-5 h-5 anim-float" color="#ff8ac0" />
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 xl:px-40">
+        {/* the wide side padding used to leave room for two characters that
+            stood at either end; without them the cards take the full width */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {features.map(({ Icon, title, sub }) => (
             <div
               key={title}

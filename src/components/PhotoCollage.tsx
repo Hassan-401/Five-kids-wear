@@ -3,7 +3,7 @@ import { useLang } from "../i18n/LanguageContext";
 import { useCatalog } from "../context/CatalogContext";
 
 type Card = {
-  /** product slug, or "lifestyle" for the campaign photo in the middle */
+  /** product slug — every card is a product photo */
   slug: string;
   /** placement inside the collage box, in % of its width/height */
   x: number;
@@ -21,7 +21,7 @@ const cards: Card[] = [
   { slug: "tom-jerry-pajama", x: 2, y: 1, w: 25, rotate: -7, depth: 1.5, delay: 0.05, bob: 5.5, z: 10 },
   { slug: "blue-dragon-pajama", x: 56, y: 0, w: 25, rotate: 6, depth: 1.3, delay: 0.15, bob: 6.4, z: 10 },
   { slug: "teddy-bows-pajama", x: -3, y: 33, w: 24, rotate: -4, depth: 1.8, delay: 0.25, bob: 5.1, z: 8 },
-  { slug: "lifestyle", x: 26, y: 15, w: 36, rotate: 2, depth: 0.5, delay: 0, bob: 7.2, z: 20 },
+  { slug: "space-raglan-set", x: 26, y: 15, w: 36, rotate: 2, depth: 0.5, delay: 0, bob: 7.2, z: 20 },
   { slug: "lion-king-pajama", x: 66, y: 32, w: 25, rotate: 7, depth: 1.7, delay: 0.32, bob: 5.8, z: 8 },
   { slug: "girl-bodysuit-pack-panda", x: 10, y: 64, w: 25, rotate: 5, depth: 1.1, delay: 0.4, bob: 6.8, z: 12 },
   { slug: "snoopy-pajama", x: 48, y: 66, w: 25, rotate: -6, depth: 1.4, delay: 0.48, bob: 6.1, z: 12 },
@@ -37,10 +37,7 @@ export default function PhotoCollage() {
   return (
     <div className="relative w-full aspect-[10/8] max-w-[640px] mx-auto">
       {cards.map((card, i) => {
-        const product =
-          card.slug === "lifestyle"
-            ? undefined
-            : products.find((p) => p.slug === card.slug);
+        const product = products.find((p) => p.slug === card.slug);
 
         const label = product ? pick(product.nameAr, product.nameEn) : "";
         const href = product ? `/product/${product.slug}` : "/shop";
@@ -77,7 +74,7 @@ export default function PhotoCollage() {
               >
                 <div className="overflow-hidden rounded-md bg-sky-50 aspect-[4/5]">
                   <img
-                    src={product ? product.image : "/images/promo-home.webp"}
+                    src={product ? product.image : "/images/logo.webp"}
                     alt=""
                     aria-hidden="true"
                     loading="eager"

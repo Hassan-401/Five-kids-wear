@@ -200,10 +200,10 @@ export default function Shop({
             {list.length === 0 ? (
               <div className="card-soft p-14 text-center">
                 <img
-                  src="/images/characters/catboy.webp"
+                  src="/images/logo.webp"
                   alt=""
                   aria-hidden="true"
-                  className="w-32 mx-auto mb-4 opacity-90"
+                  className="w-28 mx-auto mb-4 opacity-90"
                 />
                 <p className="text-xl font-extrabold text-navy-600">
                   {t("shop.noResults")}

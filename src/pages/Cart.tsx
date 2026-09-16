@@ -184,10 +184,10 @@ export function EmptyState({
   return (
     <div className="card-soft max-w-lg mx-auto p-12 text-center">
       <img
-        src="/images/characters/gekko.webp"
+        src="/images/logo.webp"
         alt=""
         aria-hidden="true"
-        className="w-40 mx-auto mb-4 anim-float-slow"
+        className="w-32 mx-auto mb-4 anim-float-slow"
       />
       <h2 className="text-2xl font-extrabold text-navy-600">{title}</h2>
       <p className="mt-2 font-semibold text-navy-600/65">{sub}</p>

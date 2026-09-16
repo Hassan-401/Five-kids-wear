@@ -12,10 +12,10 @@ export default function NotFound() {
 
       <div className="container-x relative text-center">
         <img
-          src="/images/characters/catboy.webp"
+          src="/images/logo.webp"
           alt=""
           aria-hidden="true"
-          className="w-48 mx-auto anim-float-slow"
+          className="w-40 mx-auto anim-float-slow"
         />
         <p className="toon-title text-7xl sm:text-8xl text-pink-500">404</p>
         <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold text-navy-600">

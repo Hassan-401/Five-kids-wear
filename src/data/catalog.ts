@@ -28,32 +28,34 @@ export type Category = {
   photo?: boolean;
 };
 
-// Illustrated tiles use the PJ Masks crew: the whole team for pajamas (they
-// are pajama heroes), Catboy for boys, Owlette for girls.
+// Every tile is a real product photograph (`photo: true` crops it to fill).
 export const categories: Category[] = [
   {
     id: "pajamas",
     slug: "pajamas",
     nameAr: "بيجامات",
     nameEn: "Pajamas",
-    image: "/images/characters/team.webp",
+    image: "/images/products/blue-dragon-pajama-1.jpg",
     tint: "from-sky-100 to-pink-100",
+    photo: true,
   },
   {
     id: "boys",
     slug: "boys",
     nameAr: "ملابس أولاد",
     nameEn: "Boys clothing",
-    image: "/images/characters/catboy.webp",
+    image: "/images/products/spiderman-summer-set-1.jpg",
     tint: "from-sky-100 to-sky-200",
+    photo: true,
   },
   {
     id: "girls",
     slug: "girls",
     nameAr: "ملابس بنات",
     nameEn: "Girls clothing",
-    image: "/images/characters/owlette.webp",
+    image: "/images/products/girl-tee-pack-unicorn-1.jpg",
     tint: "from-pink-100 to-pink-200",
+    photo: true,
   },
   {
     id: "newborn",

@@ -25,14 +25,6 @@ export default function Footer() {
       <Sparkle className="absolute top-12 end-[30%] w-6 h-6 anim-twinkle" color="#ffffff" />
       <Star className="absolute bottom-20 start-[24%] w-5 h-5 anim-twinkle" color="#ff8ac0" />
 
-      {/* Owlette gliding in from the corner beside the logo */}
-      <img
-        src="/images/characters/owlette.webp"
-        alt=""
-        aria-hidden="true"
-        className="hidden md:block absolute bottom-6 end-[1.5%] w-32 lg:w-40 select-none pointer-events-none anim-float-slow drop-shadow-[0_16px_18px_rgba(34,53,140,.2)]"
-      />
-
       <div className="container-x relative">
         <div className="grid gap-10 md:grid-cols-3 md:items-start text-center md:text-start">
           {/* social */}
