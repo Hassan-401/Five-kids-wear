@@ -7,6 +7,13 @@ export type Env = {
   /** Seeds the first dashboard account on its first successful login. */
   ADMIN_USERNAME?: string;
   ADMIN_PASSWORD?: string;
+  /** Bosta's API key. Without it every Bosta route answers `bosta_key_missing`. */
+  BOSTA_API_KEY?: string;
+  /**
+   * Bosta does not sign its webhooks, so the only thing separating a real
+   * callback from anyone on the internet is this value in the callback URL.
+   */
+  BOSTA_WEBHOOK_SECRET?: string;
 };
 
 /* ----------------------------------------------------------- db rows */
@@ -52,6 +59,7 @@ export type ShippingRow = {
   price: number;
   active: number;
   sort: number;
+  bosta_city: string;
 };
 
 export type OrderRow = {
@@ -67,6 +75,9 @@ export type OrderRow = {
   shipping: number;
   total: number;
   status: string;
+  bosta_id: string;
+  bosta_tracking: string;
+  bosta_state: string;
   created_at: string;
   updated_at: string;
 };

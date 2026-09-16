@@ -107,12 +107,17 @@ export type AdminShippingRate = {
   price: number;
   active: boolean;
   sort: number;
+  /** Bosta's city id. Empty means this destination cannot be auto-shipped. */
+  bostaCity: string;
 };
 
 export type StoreSettings = {
   phone: string;
   email: string;
   whatsapp: string;
+  facebook: string;
+  instagram: string;
+  tiktok: string;
   codEnabled: boolean;
   ordersOpen: boolean;
 };
@@ -160,6 +165,9 @@ export type TrackedOrder = {
   status: OrderStatus;
   createdAt: string;
   governorate: string;
+  /** Bosta's tracking number, once the parcel has been handed over. */
+  tracking: string;
+  trackingUrl: string;
   subtotal: number;
   shipping: number;
   total: number;
@@ -174,6 +182,7 @@ export type AdminOrderSummary = {
   total: number;
   status: OrderStatus;
   payment: string;
+  tracking: string;
   createdAt: string;
 };
 
@@ -183,8 +192,26 @@ export type AdminOrder = AdminOrderSummary & {
   notes: string;
   subtotal: number;
   shipping: number;
+  trackingUrl: string;
+  /** Bosta's own wording for where the parcel is, e.g. "Out for delivery". */
+  bostaState: string;
   updatedAt: string;
   items: OrderItem[];
+};
+
+/* --------------------------------------------------------------- Bosta */
+
+export type BostaCity = { id: string; name: string; nameAr: string; sector: number };
+export type BostaPickup = { id: string; name: string; address: string };
+export type Shipment = { id: string; trackingNumber: string; url: string };
+
+/** A dashboard account. There are no roles — every admin can do everything. */
+export type AdminUser = {
+  id: number;
+  username: string;
+  createdAt: string;
+  /** True for the account you are signed in as, which cannot delete itself. */
+  you: boolean;
 };
 
 export type AdminStats = {
@@ -254,6 +281,11 @@ export const api = {
     changePassword: (current: string, next: string) =>
       send<{ ok: true }>("POST", "/admin/password", { current, next }),
 
+    admins: () => get<{ admins: AdminUser[] }>("/admin/admins"),
+    createAdmin: (username: string, password: string) =>
+      send<{ id: number; username: string }>("POST", "/admin/admins", { username, password }),
+    deleteAdmin: (id: number) => send<{ ok: true }>("DELETE", `/admin/admins/${id}`),
+
     stats: () => get<AdminStats>("/admin/stats"),
 
     products: () => get<{ products: AdminProduct[] }>("/admin/products"),
@@ -286,7 +318,14 @@ export const api = {
     shipping: () =>
       get<{ rates: AdminShippingRate[]; freeOver: number; default: number }>("/admin/shipping"),
     saveShipping: (body: {
-      rates: { id?: number; nameAr?: string; nameEn?: string; price: number; active: boolean }[];
+      rates: {
+        id?: number;
+        nameAr?: string;
+        nameEn?: string;
+        price: number;
+        active: boolean;
+        bostaCity?: string;
+      }[];
       freeOver?: number;
       default?: number;
     }) =>
@@ -312,5 +351,11 @@ export const api = {
     },
 
     seed: () => send<{ products: number; categories: number }>("POST", "/admin/seed"),
+
+    /** Bosta. Each of these fails with `bosta_error` + a `message` from Bosta. */
+    bostaCities: () => get<{ cities: BostaCity[] }>("/admin/bosta/cities"),
+    bostaPickups: () => get<{ pickups: BostaPickup[] }>("/admin/bosta/pickups"),
+    shipOrder: (id: string) =>
+      send<Shipment>("POST", `/admin/orders/${encodeURIComponent(id)}/ship`),
   },
 };

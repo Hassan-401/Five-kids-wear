@@ -2,29 +2,20 @@ import { useState } from "react";
 import PageHeader from "../components/PageHeader";
 import Newsletter from "../components/Newsletter";
 import { useLang } from "../i18n/LanguageContext";
+import { useCatalog } from "../context/CatalogContext";
+import { socialLinks } from "../lib/socials";
 import {
   ClockIcon,
-  FacebookIcon,
-  InstagramIcon,
   MailIcon,
   PhoneIcon,
   PinIcon,
-  TiktokIcon,
-  WhatsappIcon,
-  YoutubeIcon,
 } from "../components/Icons";
 import { Star } from "../components/Decor";
 
-const socials = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram" },
-  { Icon: TiktokIcon, href: "#", label: "TikTok" },
-  { Icon: YoutubeIcon, href: "#", label: "YouTube" },
-  { Icon: WhatsappIcon, href: "#", label: "WhatsApp" },
-];
-
 export default function Contact() {
   const { t } = useLang();
+  const { settings } = useCatalog();
+  const socials = socialLinks(settings);
   const [sent, setSent] = useState(false);
 
   const submit = (e: React.FormEvent) => {
@@ -33,9 +24,21 @@ export default function Contact() {
     (e.target as HTMLFormElement).reset();
   };
 
-  const info = [
-    { Icon: PhoneIcon, label: t("contact.phone"), value: "+20 100 000 0000", ltr: true },
-    { Icon: MailIcon, label: t("contact.email"), value: "hello@fivekidswear.com", ltr: true },
+  type InfoRow = {
+    Icon: typeof PhoneIcon;
+    label: string;
+    value: string;
+    ltr?: boolean;
+  };
+
+  // the phone and email come from the dashboard; a blank one is simply hidden
+  const info: InfoRow[] = [
+    ...(settings.phone
+      ? [{ Icon: PhoneIcon, label: t("contact.phone"), value: settings.phone, ltr: true }]
+      : []),
+    ...(settings.email
+      ? [{ Icon: MailIcon, label: t("contact.email"), value: settings.email, ltr: true }]
+      : []),
     { Icon: PinIcon, label: t("contact.address"), value: t("contact.addressValue") },
     { Icon: ClockIcon, label: t("contact.hours"), value: t("contact.hoursValue") },
   ];
@@ -113,6 +116,8 @@ export default function Contact() {
                   <a
                     key={label}
                     href={href}
+                    target="_blank"
+                    rel="noreferrer noopener"
                     aria-label={label}
                     className="grid place-items-center w-10 h-10 rounded-full bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white transition"
                   >

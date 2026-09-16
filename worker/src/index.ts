@@ -10,6 +10,7 @@
 import { readSession, type AdminSession } from "./auth";
 import * as admin from "./routes-admin";
 import * as pub from "./routes-public";
+import { bostaWebhook } from "./ship";
 import type { Env } from "./types";
 import { fail, json, notFound, str, unauthorized } from "./util";
 
@@ -54,6 +55,12 @@ const routes: Route[] = [
     pub.trackOrder(env, params.id, str(url.searchParams.get("phone"), 30)),
   ),
 
+  // Bosta's callback. Not a dashboard route — Bosta has no session — so the
+  // secret in the path is what stands in for authentication.
+  route("POST", "/api/bosta/webhook/:secret", ({ request, env, params }) =>
+    bostaWebhook(request, env, params.secret),
+  ),
+
   /* ------------------------------------------------- dashboard: auth */
   route("POST", "/api/admin/login", ({ request, env }) => admin.login(request, env)),
   route("POST", "/api/admin/logout", ({ request, env }) => admin.logout(request, env)),
@@ -62,6 +69,15 @@ const routes: Route[] = [
     "POST",
     "/api/admin/password",
     ({ request, env, session }) => admin.changePassword(request, env, session),
+    true,
+  ),
+
+  route("GET", "/api/admin/admins", ({ env, session }) => admin.listAdmins(env, session), true),
+  route("POST", "/api/admin/admins", ({ request, env }) => admin.createAdmin(request, env), true),
+  route(
+    "DELETE",
+    "/api/admin/admins/:id",
+    ({ env, params, session }) => admin.deleteAdmin(env, params.id, session),
     true,
   ),
 
@@ -129,6 +145,15 @@ const routes: Route[] = [
 
   route("GET", "/api/admin/settings", ({ env }) => admin.getSettings(env), true),
   route("PUT", "/api/admin/settings", ({ request, env }) => admin.saveSettings(request, env), true),
+
+  route("GET", "/api/admin/bosta/cities", ({ env }) => admin.getBostaCities(env), true),
+  route("GET", "/api/admin/bosta/pickups", ({ env }) => admin.getBostaPickups(env), true),
+  route(
+    "POST",
+    "/api/admin/orders/:id/ship",
+    ({ env, params }) => admin.shipWithBosta(env, params.id),
+    true,
+  ),
 
   route("POST", "/api/admin/upload", ({ request, env }) => admin.uploadMedia(request, env), true),
   route("POST", "/api/admin/seed", ({ env }) => admin.runSeed(env), true),

@@ -179,6 +179,7 @@ export const translations: Record<Lang, Dict> = {
     "track.notFound": "مفيش طلب بالبيانات دي — راجع رقم الطلب ورقم التليفون",
     "track.placedOn": "تاريخ الطلب",
     "track.items": "المنتجات",
+    "track.shipment": "رقم الشحنة مع بوسطة",
 
     "status.pending": "قيد المراجعة",
     "status.confirmed": "تم التأكيد",
@@ -395,6 +396,7 @@ export const translations: Record<Lang, Dict> = {
     "track.notFound": "No order matches those details — check the number and the phone",
     "track.placedOn": "Placed on",
     "track.items": "Items",
+    "track.shipment": "Bosta tracking number",
 
     "status.pending": "Under review",
     "status.confirmed": "Confirmed",

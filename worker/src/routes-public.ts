@@ -1,4 +1,6 @@
 /** Everything the storefront calls. No authentication anywhere in this file. */
+import { egyptianPhone, trackingUrl } from "./bosta";
+import { shipOrder } from "./ship";
 import {
   toCategoryDTO,
   toProductDTO,
@@ -57,6 +59,9 @@ export async function getCatalog(env: Env) {
       phone: settings.store_phone ?? "",
       email: settings.store_email ?? "",
       whatsapp: settings.store_whatsapp ?? "",
+      facebook: settings.social_facebook ?? "",
+      instagram: settings.social_instagram ?? "",
+      tiktok: settings.social_tiktok ?? "",
       codEnabled: settings.cod_enabled !== "0",
       ordersOpen: settings.orders_open !== "0",
     },
@@ -202,6 +207,17 @@ export async function createOrder(request: Request, env: Env) {
     ),
   ]);
 
+  // With auto-ship on, the parcel is booked with Bosta the moment the order
+  // lands. It is deliberately best-effort: a courier outage must never lose a
+  // sale, so a failure leaves the order for the owner to ship by hand.
+  if (settings.bosta_auto === "1" && settings.bosta_enabled === "1") {
+    try {
+      await shipOrder(env, id);
+    } catch (err) {
+      console.error("auto-ship failed", id, err);
+    }
+  }
+
   return json({ id, subtotal, shipping, total, status: "pending" }, { status: 201 });
 }
 
@@ -216,10 +232,13 @@ export async function trackOrder(env: Env, id: string, phone: string) {
     .bind(id.toUpperCase())
     .first<OrderRow>();
 
-  // same answer for "no such order" and "wrong phone", so the endpoint cannot
-  // be used to confirm that a reference exists
-  const digits = (v: string) => v.replace(/\D/g, "");
-  if (!order || digits(order.phone) !== digits(phone)) return notFound("order_not_found");
+  // Same answer for "no such order" and "wrong phone", so the endpoint cannot
+  // be used to confirm that a reference exists. Both numbers go through the
+  // same normalisation, so someone who checked out as `+20 109…` still finds
+  // the order when they type `0109…` here.
+  if (!order || egyptianPhone(order.phone) !== egyptianPhone(phone)) {
+    return notFound("order_not_found");
+  }
 
   const { results: items } = await env.DB.prepare(
     "SELECT * FROM order_items WHERE order_id = ?",
@@ -232,6 +251,9 @@ export async function trackOrder(env: Env, id: string, phone: string) {
     status: order.status,
     createdAt: order.created_at,
     governorate: order.governorate,
+    // present only once the parcel is with Bosta, so the page can link to it
+    tracking: order.bosta_tracking,
+    trackingUrl: order.bosta_tracking ? trackingUrl(order.bosta_tracking) : "",
     subtotal: order.subtotal,
     shipping: order.shipping,
     total: order.total,

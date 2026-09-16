@@ -123,6 +123,23 @@ function OrderCard({ order }: { order: TrackedOrder }) {
         </span>
       </header>
 
+      {order.tracking && (
+        <a
+          href={order.trackingUrl}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-sky-50 px-4 py-3 font-bold text-navy-600 transition hover:bg-sky-100"
+        >
+          <span className="flex items-center gap-2">
+            <TruckIcon className="w-5 h-5 text-sky-500" />
+            {t("track.shipment")}
+          </span>
+          <bdi dir="ltr" className="font-extrabold text-sky-600">
+            {order.tracking}
+          </bdi>
+        </a>
+      )}
+
       {!cancelled && (
         <ol className="flex items-center gap-2 py-6">
           {FLOW.map((step, i) => {

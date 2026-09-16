@@ -1,24 +1,13 @@
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext";
-import {
-  FacebookIcon,
-  InstagramIcon,
-  TiktokIcon,
-  YoutubeIcon,
-  WhatsappIcon,
-} from "./Icons";
+import { useCatalog } from "../context/CatalogContext";
+import { socialLinks } from "../lib/socials";
 import { Moon, Sparkle, Star } from "./Decor";
-
-const socials = [
-  { Icon: FacebookIcon, href: "#", label: "Facebook" },
-  { Icon: InstagramIcon, href: "#", label: "Instagram" },
-  { Icon: TiktokIcon, href: "#", label: "TikTok" },
-  { Icon: YoutubeIcon, href: "#", label: "YouTube" },
-  { Icon: WhatsappIcon, href: "#", label: "WhatsApp" },
-];
 
 export default function Footer() {
   const { t } = useLang();
+  const { settings } = useCatalog();
+  const socials = socialLinks(settings);
   const year = new Date().getFullYear();
 
   const links = [
@@ -56,6 +45,8 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
                   aria-label={label}
                   className="grid place-items-center w-10 h-10 rounded-full bg-white text-sky-600 shadow-sm hover:bg-sky-500 hover:text-white hover:-translate-y-0.5 transition"
                 >

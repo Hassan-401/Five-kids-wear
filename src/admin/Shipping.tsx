@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLang } from "../i18n/LanguageContext";
-import { api, type AdminShippingRate } from "../lib/api";
+import { api, type AdminShippingRate, type BostaCity } from "../lib/api";
+import { bostaMessage } from "./bosta";
 import {
   Button,
   Card,
   Field,
   Input,
   Loading,
+  Select,
   Table,
   ToastBar,
   useToast,
@@ -28,6 +30,17 @@ export default function Shipping() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newRate, setNewRate] = useState({ nameAr: "", nameEn: "", price: "" });
+  const [cities, setCities] = useState<BostaCity[]>([]);
+  const [citiesError, setCitiesError] = useState("");
+
+  // The Bosta city list is a nice-to-have: without it the page still edits
+  // prices, it just cannot offer the mapping dropdown.
+  useEffect(() => {
+    api.admin
+      .bostaCities()
+      .then((res) => setCities(res.cities))
+      .catch((err) => setCitiesError(bostaMessage(err, pick)));
+  }, [pick]);
 
   const load = useCallback(() => {
     setLoading(true);
@@ -51,7 +64,12 @@ export default function Shipping() {
     setSaving(true);
     try {
       const res = await api.admin.saveShipping({
-        rates: rates.map((r) => ({ id: r.id, price: r.price, active: r.active })),
+        rates: rates.map((r) => ({
+          id: r.id,
+          price: r.price,
+          active: r.active,
+          bostaCity: r.bostaCity,
+        })),
         freeOver,
         default: fallback,
       });
@@ -161,6 +179,7 @@ export default function Shipping() {
           head={[
             pick("المحافظة", "Governorate"),
             pick("السعر", "Price"),
+            pick("مدينة بوسطة", "Bosta city"),
             pick("مفعّلة", "Active"),
             "",
           ]}
@@ -179,6 +198,22 @@ export default function Shipping() {
                   onChange={(e) => patch(rate.id, { price: Number(e.target.value) })}
                   className="w-28"
                 />
+              </td>
+              <td className="px-3 py-2.5">
+                <Select
+                  value={rate.bostaCity}
+                  disabled={cities.length === 0}
+                  onChange={(e) => patch(rate.id, { bostaCity: e.target.value })}
+                  className="w-44"
+                  aria-label={pick("مدينة بوسطة", "Bosta city")}
+                >
+                  <option value="">{pick("— بدون —", "— none —")}</option>
+                  {cities.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {pick(c.nameAr, c.name)}
+                    </option>
+                  ))}
+                </Select>
               </td>
               <td className="px-3 py-2.5">
                 <input
@@ -200,10 +235,16 @@ export default function Shipping() {
 
         <p className="mt-4 text-xs font-semibold text-slate-400">
           {pick(
-            "المحافظات غير المفعّلة مش هتظهر للعميل في صفحة إتمام الطلب.",
-            "Inactive destinations are hidden from the checkout form.",
+            "المحافظات غير المفعّلة مش هتظهر للعميل في صفحة إتمام الطلب. والمحافظة اللي مالهاش مدينة في بوسطة مينفعش تتشحن من صفحة الطلبات.",
+            "Inactive destinations are hidden from the checkout form, and a governorate with no Bosta city cannot be shipped from the Orders page.",
           )}
         </p>
+        {citiesError && (
+          <p className="mt-2 text-xs font-bold text-amber-600">
+            {pick("قائمة مدن بوسطة مش متاحة: ", "Bosta's city list is unavailable: ")}
+            {citiesError}
+          </p>
+        )}
       </Card>
 
       <Card title={pick("إضافة منطقة", "Add a destination")}>

@@ -13,7 +13,10 @@
     "cf:deploy": "npm run build && wrangler deploy",
 
     "db:schema": "wrangler d1 execute five-kids-wear --local --file=./worker/schema.sql",
-    "db:schema:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/schema.sql"
+    "db:schema:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/schema.sql",
+
+    "db:migrate": "wrangler d1 execute five-kids-wear --local --file=./worker/migrations/001_bosta.sql",
+    "db:migrate:remote": "wrangler d1 execute five-kids-wear --remote --file=./worker/migrations/001_bosta.sql"
   },
   "dependencies": {
     "react": "^19.1.0",

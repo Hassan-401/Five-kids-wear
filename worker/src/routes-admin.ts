@@ -13,7 +13,9 @@ import {
   verifyPassword,
   type AdminSession,
 } from "./auth";
+import { BostaError, listCities, listPickupLocations, trackingUrl } from "./bosta";
 import { seedCatalog } from "./seed";
+import { shipOrder } from "./ship";
 import {
   ORDER_STATUSES,
   toCategoryDTO,
@@ -30,6 +32,7 @@ import {
 import {
   badRequest,
   bool,
+  fail,
   json,
   list,
   money,
@@ -94,6 +97,62 @@ export async function changePassword(request: Request, env: Env, session: AdminS
   // every other device is signed out when the password changes
   await env.DB.prepare("DELETE FROM sessions WHERE admin_id = ?").bind(session.adminId).run();
   return json({ ok: true }, { headers: { "set-cookie": clearCookie(request) } });
+}
+
+/* ----------------------------------------------------- dashboard users */
+
+export async function listAdmins(env: Env, session: AdminSession) {
+  const { results } = await env.DB.prepare(
+    "SELECT id, username, created_at FROM admins ORDER BY id",
+  ).all<{ id: number; username: string; created_at: string }>();
+
+  return json({
+    admins: results.map((a) => ({
+      id: a.id,
+      username: a.username,
+      createdAt: a.created_at,
+      you: a.id === session.adminId,
+    })),
+  });
+}
+
+/**
+ * Adds a second person to the dashboard.
+ *
+ * Everyone who signs in has the same powers — there are no roles — so this is
+ * only for people the owner trusts with the whole shop.
+ */
+export async function createAdmin(request: Request, env: Env) {
+  const body = await readJson<{ username?: string; password?: string }>(request);
+  const username = str(body?.username, 60);
+  const password = typeof body?.password === "string" ? body.password : "";
+
+  if (!username) return badRequest("username_required");
+  if (password.length < 8) return badRequest("password_too_short");
+
+  const clash = await env.DB.prepare("SELECT id FROM admins WHERE username = ?")
+    .bind(username)
+    .first<{ id: number }>();
+  if (clash) return badRequest("username_taken");
+
+  const res = await env.DB.prepare("INSERT INTO admins (username, password_hash) VALUES (?, ?)")
+    .bind(username, await hashPassword(password))
+    .run();
+
+  return json({ id: res.meta.last_row_id, username }, { status: 201 });
+}
+
+export async function deleteAdmin(env: Env, id: string, session: AdminSession) {
+  const adminId = Number(id);
+  // locking yourself out, or emptying the table, would leave nobody able to sign in
+  if (adminId === session.adminId) return badRequest("cannot_delete_yourself");
+
+  const count = await env.DB.prepare("SELECT COUNT(*) AS n FROM admins").first<{ n: number }>();
+  if ((count?.n ?? 0) <= 1) return badRequest("last_admin");
+
+  const res = await env.DB.prepare("DELETE FROM admins WHERE id = ?").bind(adminId).run();
+  if (!res.meta.changes) return notFound("admin_not_found");
+  return json({ ok: true });
 }
 
 /* ------------------------------------------------------------- summary */
@@ -503,6 +562,7 @@ export async function listOrders(env: Env, url: URL) {
       total: o.total,
       status: o.status,
       payment: o.payment,
+      tracking: o.bosta_tracking,
       createdAt: o.created_at,
     })),
   });
@@ -533,6 +593,9 @@ export async function getOrder(env: Env, id: string) {
     shipping: order.shipping,
     total: order.total,
     status: order.status,
+    tracking: order.bosta_tracking,
+    trackingUrl: order.bosta_tracking ? trackingUrl(order.bosta_tracking) : "",
+    bostaState: order.bosta_state,
     createdAt: order.created_at,
     updatedAt: order.updated_at,
     items: items.map((i) => ({
@@ -597,6 +660,7 @@ export async function listShipping(env: Env) {
       price: r.price,
       active: !!r.active,
       sort: r.sort,
+      bostaCity: r.bosta_city,
     })),
     freeOver: Number(map.free_shipping_over ?? 0),
     default: Number(map.default_shipping ?? 60),
@@ -604,7 +668,14 @@ export async function listShipping(env: Env) {
 }
 
 type ShippingInput = {
-  rates?: { id?: number; nameAr?: string; nameEn?: string; price?: number; active?: boolean }[];
+  rates?: {
+    id?: number;
+    nameAr?: string;
+    nameEn?: string;
+    price?: number;
+    active?: boolean;
+    bostaCity?: string;
+  }[];
   freeOver?: number;
   default?: number;
 };
@@ -620,13 +691,17 @@ export async function saveShipping(request: Request, env: Env) {
     const price = money(rate.price);
     const active = bool(rate.active, true) ? 1 : 0;
 
+    const bostaCity = str(rate.bostaCity, 64);
+
     if (rate.id) {
       statements.push(
-        env.DB.prepare("UPDATE shipping_rates SET price = ?, active = ? WHERE id = ?").bind(
-          price,
-          active,
-          rate.id,
-        ),
+        env.DB.prepare(
+          // the mapping is only rewritten when the form sent one, so saving
+          // prices from an older tab cannot wipe it
+          `UPDATE shipping_rates SET price = ?, active = ?,
+             bosta_city = CASE WHEN ? THEN ? ELSE bosta_city END
+           WHERE id = ?`,
+        ).bind(price, active, rate.bostaCity === undefined ? 0 : 1, bostaCity, rate.id),
       );
     } else {
       const nameEn = str(rate.nameEn, 60);
@@ -634,11 +709,12 @@ export async function saveShipping(request: Request, env: Env) {
       if (!nameEn) continue;
       statements.push(
         env.DB.prepare(
-          `INSERT INTO shipping_rates (name_ar, name_en, price, active, sort)
-           VALUES (?, ?, ?, ?, 99)
+          `INSERT INTO shipping_rates (name_ar, name_en, price, active, sort, bosta_city)
+           VALUES (?, ?, ?, ?, 99, ?)
            ON CONFLICT(name_en) DO UPDATE SET
-             name_ar = excluded.name_ar, price = excluded.price, active = excluded.active`,
-        ).bind(nameAr, nameEn, price, active),
+             name_ar = excluded.name_ar, price = excluded.price, active = excluded.active,
+             bosta_city = excluded.bosta_city`,
+        ).bind(nameAr, nameEn, price, active, bostaCity),
       );
     }
   }
@@ -674,10 +750,16 @@ const EDITABLE_SETTINGS = [
   "store_phone",
   "store_email",
   "store_whatsapp",
+  "social_facebook",
+  "social_instagram",
+  "social_tiktok",
   "cod_enabled",
   "orders_open",
   "free_shipping_over",
   "default_shipping",
+  "bosta_enabled",
+  "bosta_pickup",
+  "bosta_auto",
 ];
 
 export async function getSettings(env: Env) {
@@ -739,4 +821,44 @@ export async function runSeed(env: Env) {
   const existing = await env.DB.prepare("SELECT COUNT(*) AS n FROM products").first<{ n: number }>();
   const counts = await seedCatalog(env);
   return json({ ...counts, replaced: existing?.n ?? 0 });
+}
+
+/* --------------------------------------------------------------- Bosta */
+
+/**
+ * Every Bosta route answers the same way when something goes wrong: the code
+ * the dashboard knows how to translate, plus Bosta's own message for anything
+ * unexpected, so the owner sees "Invalid phone" rather than "502".
+ */
+function bostaFailed(err: unknown) {
+  if (err instanceof BostaError) return fail(err.status, "bosta_error", { message: err.message });
+  console.error("bosta call failed", err);
+  return fail(502, "bosta_error", { message: "unknown_error" });
+}
+
+/** The city list, for mapping governorates on the Shipping page. */
+export async function getBostaCities(env: Env) {
+  try {
+    return json({ cities: await listCities(env) });
+  } catch (err) {
+    return bostaFailed(err);
+  }
+}
+
+/** The addresses Bosta will collect parcels from — chosen once, in Settings. */
+export async function getBostaPickups(env: Env) {
+  try {
+    return json({ pickups: await listPickupLocations(env) });
+  } catch (err) {
+    return bostaFailed(err);
+  }
+}
+
+/** Books one order with Bosta and returns its tracking number. */
+export async function shipWithBosta(env: Env, id: string) {
+  try {
+    return json(await shipOrder(env, id));
+  } catch (err) {
+    return bostaFailed(err);
+  }
 }

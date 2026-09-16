@@ -7,6 +7,7 @@ import {
   type AdminOrderSummary,
   type OrderStatus,
 } from "../lib/api";
+import { bostaMessage } from "./bosta";
 import {
   Button,
   Card,
@@ -103,6 +104,29 @@ export default function Orders() {
     }
   };
 
+  /** Hands the order to Bosta and stores the tracking number it answers with. */
+  const ship = async (id: string) => {
+    setSaving(true);
+    try {
+      const shipment = await api.admin.shipOrder(id);
+      show(
+        pick(
+          `تم إنشاء الشحنة — رقم التتبع ${shipment.trackingNumber}`,
+          `Shipment created — tracking number ${shipment.trackingNumber}`,
+        ),
+      );
+      // shipping also nudges a pending order to confirmed, so re-read it
+      setOpen(await api.admin.order(id));
+      setOrders((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, tracking: shipment.trackingNumber } : o)),
+      );
+    } catch (err) {
+      show(bostaMessage(err, pick), "error");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const remove = async (id: string) => {
     if (!window.confirm(pick("متأكد من حذف الطلب؟", "Delete this order?"))) return;
     try {
@@ -166,6 +190,11 @@ export default function Orders() {
               <tr key={o.id} className="border-b border-slate-100 last:border-0">
                 <td className="px-3 py-3 font-bold text-slate-800" dir="ltr">
                   {o.id}
+                  {o.tracking && (
+                    <span className="block text-xs font-semibold text-sky-600">
+                      {o.tracking}
+                    </span>
+                  )}
                 </td>
                 <td className="px-3 py-3">
                   <p className="font-semibold text-slate-700">{o.name}</p>
@@ -201,6 +230,7 @@ export default function Orders() {
           statusLabel={statusLabel}
           onClose={() => setOpen(null)}
           onStatus={(next) => changeStatus(open.id, next)}
+          onShip={() => ship(open.id)}
           onDelete={() => remove(open.id)}
         />
       )}
@@ -216,6 +246,7 @@ function OrderDialog({
   statusLabel,
   onClose,
   onStatus,
+  onShip,
   onDelete,
 }: {
   order: AdminOrder;
@@ -223,6 +254,7 @@ function OrderDialog({
   statusLabel: (s: OrderStatus) => string;
   onClose: () => void;
   onStatus: (next: OrderStatus) => void;
+  onShip: () => void;
   onDelete: () => void;
 }) {
   const { pick, price } = useLang();
@@ -313,6 +345,45 @@ function OrderDialog({
               </dd>
             </div>
           </dl>
+
+          <section className="border-t border-slate-100 pt-4">
+            <h3 className="mb-2 font-bold text-slate-700">{pick("الشحن", "Shipping")}</h3>
+            {order.tracking ? (
+              <div className="rounded-xl bg-slate-50 p-3">
+                <p className="text-xs font-bold text-slate-400">
+                  {pick("رقم التتبع مع بوسطة", "Bosta tracking number")}
+                </p>
+                <a
+                  href={order.trackingUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="font-extrabold text-sky-700 underline-offset-2 hover:underline"
+                  dir="ltr"
+                >
+                  {order.tracking}
+                </a>
+                {order.bostaState && (
+                  <p className="mt-1 text-xs font-semibold text-slate-500" dir="ltr">
+                    {order.bostaState}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3">
+                <Button onClick={onShip} disabled={saving || order.status === "cancelled"}>
+                  {saving
+                    ? pick("جاري الإنشاء...", "Creating...")
+                    : pick("اشحن مع بوسطة", "Ship with Bosta")}
+                </Button>
+                <p className="text-xs font-semibold text-slate-400">
+                  {pick(
+                    "هيتعمل أوردر في بوسطة بنفس بيانات العميل، والتحصيل هيبقى إجمالي الطلب.",
+                    "Creates the shipment in Bosta with this customer's details and collects the order total.",
+                  )}
+                </p>
+              </div>
+            )}
+          </section>
 
           <section className="border-t border-slate-100 pt-4">
             <h3 className="mb-2 font-bold text-slate-700">{pick("تغيير الحالة", "Change status")}</h3>

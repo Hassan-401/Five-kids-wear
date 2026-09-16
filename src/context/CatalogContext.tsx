@@ -49,8 +49,11 @@ const fallbackShipping: ShippingTable = {
 
 const fallbackSettings: StoreSettings = {
   phone: "",
-  email: "",
+  email: "ahmedgad4646@gmail.com",
   whatsapp: "",
+  facebook: "https://www.facebook.com/share/1Dq2q1ZMuB/",
+  instagram: "https://www.instagram.com/the.five.kids.wear",
+  tiktok: "https://www.tiktok.com/@the.five.kids.wear",
   codEnabled: true,
   ordersOpen: true,
 };
